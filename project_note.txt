@@ -1,0 +1,5 @@
+1. Setting up a .env file and config
+2. setting up a settings module instead of a file
+    i. command to run the settigs (1) in commands.txt file
+    ii. Or you edit the manage.py to point to the settings file you want (Preffered choice)
+3. Add another ".parent" to the BASE_DIR make the root path correct
