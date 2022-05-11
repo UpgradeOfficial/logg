@@ -3,3 +3,7 @@
 3. py -m venv <name_of_virtual_environment> e.g py -m venv venv
 4  coverage run --omit='*/venv/*' manage.py test
 5. coverage html
+6. python -m http.server
+7. ngrok config add-authtoken <TOKEN>
+8. ngrok http 8000
+9. python manage.py flush

@@ -3,3 +3,12 @@
     i. command to run the settigs (1) in commands.txt file
     ii. Or you edit the manage.py to point to the settings file you want (Preffered choice)
 3. Add another ".parent" to the BASE_DIR make the root path correct
+4. How to run a simple server in python
+    i. command to run the settigs (6) in commands.txt file
+5. setting up ngrok 
+	i. Starting a local service e.g your django project or your can set up a server using former above 
+	ii. Installing the ngrok agent i.e download on the ngrok site
+	iii. add your auth token, command to run the settigs (7) in commands.txt file
+	iii. Connecting your agent to your ngrok account 
+	iv. Start ngrok command to run the settigs (8) in commands.txt file
+6. Delete all data in the database (command to run the settigs (9) in commands.txt file)

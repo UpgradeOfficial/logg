@@ -7,7 +7,7 @@ from rest_framework import status
 from core.utils import jwt_decode, jwt_encode
 
 from .models import User
-from .serialzers import ForgotPasswordSerializer, ChangePasswordSerializer, ResetPasswordSerializer
+from .serialzers import ForgotPasswordSerializer, ChangePasswordSerializer, ResetPasswordSerializer, UserRegistrationSerializer
 
 # Create your views here.
 class InitiatePasswordResetView(APIView):
@@ -61,7 +61,21 @@ class ResetPasswordView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST, data={"message": "bad request"})
 
 
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
 
+class ConfirmEmailView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, token, *args, **kwargs):
+        
+        decoded_data = jwt_decode(token)
+        email = decoded_data['email']
+        user = get_object_or_404(User, email=email)
+        user.is_verified =True
+        user.save()
+        return Response(status=status.HTTP_200_OK, data={"message":"Email Verification successful"})
     
     
