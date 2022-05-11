@@ -1,9 +1,22 @@
-from dataclasses import fields
-from urllib import request
-from django.forms import PasswordInput
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
 
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    tokens = serializers.SerializerMethodField()
 
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def get_tokens(self, user):
+        refresh = RefreshToken.for_user(user)
+        data = {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+        return data
+        
 class ForgotPasswordSerializer(serializers.Serializer):
     """
     This is used to serializer the email field 

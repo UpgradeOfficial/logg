@@ -11,7 +11,20 @@ from .managers import UserManager
 
 
 class User(AbstractUser, CoreModel):
+    class AUTH_PROVIDER_TYPE(models.TextChoices):
+        EMAIL = "EMAIL", _("email")
+        GOOGLE = "GOOGLE", _("google")
+        FACEBOOK = "FACEBOOK", _("facebook")
+        TWITTER = "TWITTER", _("twitter")
+        
     email = models.EmailField(_('email address'), unique=True)
+    is_verified = models.BooleanField(default=False)
+    auth_povider = models.CharField( _("user type"),
+        max_length=20,
+        choices=AUTH_PROVIDER_TYPE.choices,
+        default=AUTH_PROVIDER_TYPE.EMAIL,
+        blank=True,
+    )
     username = None
     objects = UserManager()
     USERNAME_FIELD = 'email'
