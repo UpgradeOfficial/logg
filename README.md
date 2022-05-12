@@ -1,2 +1,2 @@
 # logg
-security app for soiety
+security app for society. This will make our you feel more secured. 

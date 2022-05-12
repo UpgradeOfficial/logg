@@ -65,6 +65,8 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
+    
+
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]

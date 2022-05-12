@@ -48,10 +48,13 @@ INSTALLED_APPS = [
     "corsheaders",
     # Custom Apps
     'user',
+    "payment_provider"
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Security middleware for whitenose
+     "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     # this is need for other apps to interact with your app 
     "corsheaders.middleware.CorsMiddleware",
@@ -153,7 +156,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ["BEARER"],
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=6),
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=1),
     # 'ROTATE_REFRESH_TOKENS': False,
     # 'BLACKLIST_AFTER_ROTATION': False,
@@ -210,3 +213,16 @@ EMAIL_PORT =config('EMAIL_HOST_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_PRIVATE_KEY = config('PAYSTACK_PRIVATE_KEY')
+
+FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
+FLUTTERWAVE_PRIVATE_KEY = config('FLUTTERWAVE_PRIVATE_KEY')
+
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
+
+
+CARD_PAYMENT_SUCCESS_URL = "https://www.thinkalpha.com.ng/"
