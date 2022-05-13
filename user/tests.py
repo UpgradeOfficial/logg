@@ -30,6 +30,8 @@ class TestUser(TestCase):
         self.assertTrue('tokens' in response_dict)
         self.assertTrue('access' in response_dict["tokens"])
         self.assertTrue('refresh' in response_dict["tokens"])
+        #check if password is hashed
+        self.assertNotEqual(data['password'], User.objects.first().password)
 
     def test_user_registration_email_in_database(self): 
         url = reverse("user:register")
