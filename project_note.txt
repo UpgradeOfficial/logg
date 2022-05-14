@@ -12,3 +12,8 @@
 	iii. Connecting your agent to your ngrok account 
 	iv. Start ngrok command to run the settigs (8) in commands.txt file
 6. Delete all data in the database (command to run the settigs (9) in commands.txt file)
+7. You can't import a function with an underscore in from of if e.g def _internal():
+8. Trailing underscore is used to distinguish python reserved words and your custom variables e.g class_
+
+9. 100_00_00 is the same as 1000000 but it is more readable. do well to utilise it in your code
+10. facebook auth_code expires in 5291

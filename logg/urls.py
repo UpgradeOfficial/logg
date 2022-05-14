@@ -14,6 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from distutils.log import debug
+from django import urls
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
@@ -22,7 +25,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-
+from django.conf.urls.static import static
 from core.views import custom_500_handler, Custom404, redirect_to_swagger
 
 
@@ -41,10 +44,12 @@ urlpatterns = [
 
     # Admin path
     path('admin/', admin.site.urls),
-    # custom urls
+    # custom urls for users
     path('api/user/', include('user.urls')),
     # custom urls for payment in the future this might need to be changed
     path('api/pay/', include('payment_provider.urls')),
+    # custom urls for social authentication
+    path('api/social-auth/', include('social_auth.urls')),
     path('', redirect_to_swagger),
 ]
 
@@ -54,3 +59,6 @@ admin.site.index_title = "Welcome to Logg Admin Portal"
 
 handler404 = Custom404.as_view()
 handler500 = "core.views.custom_500_handler"
+
+if debug:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

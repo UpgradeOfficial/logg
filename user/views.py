@@ -1,6 +1,7 @@
+
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework import generics
+from rest_framework import generics, parsers
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -62,8 +63,11 @@ class ResetPasswordView(APIView):
 
 
 class UserRegistrationView(generics.CreateAPIView):
+    # this can be tested in postman with the form-data
+    # Use form data in the client part also
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     
 

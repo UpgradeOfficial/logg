@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractUser
@@ -8,7 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from core.models import CoreModel
 
 from .managers import UserManager
-
+def upload_to(instance, filename):
+    return "users/{filename}".format(filename=filename)
 
 class User(AbstractUser, CoreModel):
     class AUTH_PROVIDER_TYPE(models.TextChoices):
@@ -19,6 +21,7 @@ class User(AbstractUser, CoreModel):
         
     email = models.EmailField(_('email address'), unique=True)
     is_verified = models.BooleanField(default=False)
+    image = models.ImageField(_("image"), upload_to = upload_to, default="default.png")
     auth_povider = models.CharField( _("user type"),
         max_length=20,
         choices=AUTH_PROVIDER_TYPE.choices,

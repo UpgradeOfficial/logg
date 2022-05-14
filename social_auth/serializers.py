@@ -3,26 +3,29 @@ from rest_framework import serializers
 from django.conf import settings
 
 from user.models import User
-from .google import Google 
-from . import register
+from .facebook import Facebook 
+from .register import register_social_user
 
-class GoogleSocialAuthSerializers(serializers.Serializer):
+class FacebookSocialAuthSerializer(serializers.Serializer):
+    """Handles serialization of facebook related data"""
     auth_token = serializers.CharField()
 
     def validate_auth_token(self, auth_token):
-        user_data = Google.validate(auth_token)
+        user_data = Facebook.validate(auth_token)
+        print(user_data)
         try:
-            user_data['sub']
-        except:
-            raise serializers.ValidationError("this token has expired or is no longer in use")
-        if user_data['aud'] != settings.GOOOGEL_CLIENT_ID:
-            raise serializers.ValidationError("opps, who are you !!!")
-        
-        user_id = user_data['sub']
-        email = user_data['email']
-        name = user_data['name']
-        provider = User.AUTH_PROVIDER_TYPE.GOOGLE
+            user_id = user_data['id']
+            email = user_data['email']
+            name = user_data['name']
+            provider = 'facebook'
+            return register_social_user(
+                provider=provider,
+                user_id=user_id,
+                email=email,
+                name=name
+            )
+        except Exception as identifier:
 
-        return register.register_social_user(
-            provider=provider, user_id=user_id, email=email, name=name
-        )
+            raise serializers.ValidationError(
+                'The token  is invalid or expired. Please login again.'
+            )

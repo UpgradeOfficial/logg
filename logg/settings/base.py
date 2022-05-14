@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 # Setting up a config for secrets
 from decouple import config
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # add another parent to make the root path correct
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     # Custom Apps
     'user',
+    "social_auth",
     "payment_provider"
 ]
 
@@ -224,5 +226,10 @@ FLUTTERWAVE_PRIVATE_KEY = config('FLUTTERWAVE_PRIVATE_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
 
-
+SOCIAL_SECRET = config('SOCIAL_SECRET')
 CARD_PAYMENT_SUCCESS_URL = "https://www.thinkalpha.com.ng/"
+
+
+# Image setup
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
