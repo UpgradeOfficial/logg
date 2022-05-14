@@ -82,6 +82,6 @@ class ConfirmEmailView(APIView):
         user = get_object_or_404(User, email=email)
         user.is_verified =True
         user.save()
-        return Response(status=status.HTTP_200_OK, data={"message":"Email Verification successful"})
+        return Response(status=status.HTTP_200_OK, data={"message" : "Email Verification successful"})
     
     
