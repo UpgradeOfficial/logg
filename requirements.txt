@@ -5,8 +5,10 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 coverage==6.3.2
 dj-database-url==0.5.0
-Django==3.2.13
+Django==4.0.4
 django-cors-headers==3.11.0
+django-debug-toolbar==3.4.0
+django-filter==21.1
 django-heroku==0.3.1
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.1.0
