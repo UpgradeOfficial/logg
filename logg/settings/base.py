@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.sites",
     # Third party Apps
-    "debug_toolbar",
+    # "debug_toolbar",
     'django_filters',
     'drf_spectacular',
     'drf_spectacular_sidecar',
@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     # Custom Apps
+    
     'user',
+    'school',
     "social_auth",
     "payment_provider"
 ]
@@ -63,7 +65,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     # this is need for other apps to interact with your app 
     "corsheaders.middleware.CorsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    #"debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

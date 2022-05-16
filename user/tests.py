@@ -1,12 +1,12 @@
-import email
+import os
 from unittest import mock
-import json
+from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
 from core.tests.models_setups import create_user
 from core.utils import jwt_encode
-
-
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from user.models import User
 
@@ -20,10 +20,15 @@ class TestUser(TestCase):
         self.user = create_user()
 
     def test_user_registration_right_information(self): 
+       
+
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
-        data= {"email":"i@i.com", "password": "new_password" }
-        response = self.client.post(url, data=data, content_type='application/json')
+        data= {"email":"i@i.com", "password": "new_password", 'image':image}
+        response = self.client.post(url, data=data)
         response_dict = response.json()
+        print(response_dict)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(User.objects.count(),2)
         self.assertTrue(User.objects.filter(email="i@i.com").exists())
@@ -33,10 +38,12 @@ class TestUser(TestCase):
         #check if password is hashed
         self.assertNotEqual(data['password'], User.objects.first().password)
 
-    def test_user_registration_email_in_database(self): 
+    def test_user_registration_email_in_database(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data') 
         url = reverse("user:register")
-        data= {"email":self.user.email, "password": "new_password" }
-        response = self.client.post(url, data=data, content_type='application/json')
+        data= {"email":self.user.email, "password": "new_password", "image": image}
+        response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(User.objects.count(),1)
         self.assertFalse(User.objects.filter(email="i@i.com").exists())

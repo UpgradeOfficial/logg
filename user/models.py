@@ -57,7 +57,7 @@ class User(AbstractUser, CoreModel):
     
 
 class School(CoreModel):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 class Administrator(CoreModel):

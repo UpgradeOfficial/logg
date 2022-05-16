@@ -18,6 +18,6 @@ class Payment(CoreModel):
         blank=True,
         null=True
     )
-    amount = models.DecimalField()
+    amount = models.DecimalField(decimal_places=2, max_digits=30)
     student = models.ForeignKey('user.Student', on_delete=models.PROTECT)
     
