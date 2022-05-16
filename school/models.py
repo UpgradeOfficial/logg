@@ -1,0 +1,73 @@
+from django.db import models
+
+from django.utils.translation import gettext_lazy as _
+
+from core.models import CoreModel
+
+# Create your models here.
+
+class Term(CoreModel):
+    class TERM_TYPE(models.TextChoices):
+        '''
+        '''
+        FIRST = "FIRST", _("FIRST")
+        SECOND = "SECOND", _("SECOND")
+        THIRD = "THIRD", _("THIRD")
+        
+    name = models.CharField( _("name"),
+        max_length=20,
+        choices=TERM_TYPE.choices,
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()  
+
+
+class Expense(CoreModel):
+    term = models.ForeignKey(Term, on_delete=models.PROTECT, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    amount = models.DecimalField()
+
+class Fee(CoreModel):
+    term = models.ForeignKey(Term, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    amount = models.DecimalField()
+    
+class ClassRoom(CoreModel):
+    name = models.CharField(max_length=100)
+    school = models.ForeignKey("user.School", on_delete=models.CASCADE)
+
+
+class Subject(CoreModel):
+    name = models.CharField(max_length=100)
+    classroom = models.ForeignKey("school.classroom", on_delete=models.SET_NULL, null=True, blank=True)
+
+class Score(CoreModel):
+    subject = models.ForeignKey('school.Subject', on_delete=models.CASCADE)
+    student = models.ForeignKey('user.Student', on_delete=models.CASCADE)
+    score = models.DecimalField()
+    total_score = models.DecimalField()
+
+class Question(CoreModel):
+    class QUESTION_TYPE(models.TextChoices):
+        SINGLE_ANSWER = "SINGLE_ANSWER", _("SINGLE_ANSWER")
+        MULTI_CHOICE = "MULTI_CHOICE", _("MULTI_CHOICE")
+
+    subject = models.ForeignKey("school.Subject", on_delete=models.SET_NULL, null=True, blank=True)
+    text = models.TextField()
+    question_type = models.CharField( _("question type"),
+        max_length=20,
+        choices=QUESTION_TYPE.choices,
+    )
+    answer = models.CharField(max_length=50)
+
+class QuestionAnswer(CoreModel):
+    question = models.ForeignKey("school.Question", on_delete=models.SET_NULL, null=True, blank=True)
+    index = models.CharField(max_length=50)
+    text = models.TextField()
+
+class StudentAnswer(CoreModel):
+    Qanswer = models.ForeignKey("school.QuestionAnswer", on_delete=models.SET_NULL, null=True, blank=True)
+    index = models.CharField(max_length=50)
+    text = models.TextField()

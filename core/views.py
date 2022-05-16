@@ -1,12 +1,25 @@
 
 # Create your views here.
-
+import json
+import os
 from django.shortcuts import redirect
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_404_NOT_FOUND
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
+
+
+
+from django.conf import settings
+from drf_spectacular.utils import (
+    OpenApiExample,
+    extend_schema,
+    OpenApiResponse,
+)
+from drf_spectacular.types import OpenApiTypes
+
+
 
 
 class Custom404(APIView):
@@ -39,3 +52,26 @@ def custom_500_handler(request, *args, **argv):
 def redirect_to_swagger(request):
     ...
     return redirect('swagger-ui')
+
+
+class PhoneCode(APIView):
+    permission_classes = (AllowAny,)
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(
+                description="Success.",
+                examples=[
+                    OpenApiExample(
+                        name="example 1",
+                        value=[{"name": "string", "phone_code": "string"}],
+                    )
+                ],
+                response=[OpenApiTypes.STR],
+            )
+        },
+    )
+    def get(self, *args, **kwargs):
+        data = json.load(open(os.path.join(settings.BASE_DIR , "data" , "json","country_phone_code.json")))
+        return Response({"status_code": 200, "message": "Success.", "result": data})
+

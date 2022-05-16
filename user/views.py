@@ -8,7 +8,11 @@ from rest_framework import status
 from core.utils import jwt_decode, jwt_encode
 
 from .models import User
-from .serialzers import ForgotPasswordSerializer, ChangePasswordSerializer, ResetPasswordSerializer, UserRegistrationSerializer
+from .serialzers import (ForgotPasswordSerializer,
+                        ChangePasswordSerializer, 
+                        ResetPasswordSerializer, 
+                        UserProfileSerializer, 
+                        UserRegistrationSerializer)
 
 # Create your views here.
 class InitiatePasswordResetView(APIView):
@@ -83,5 +87,18 @@ class ConfirmEmailView(APIView):
         user.is_verified =True
         user.save()
         return Response(status=status.HTTP_200_OK, data={"message" : "Email Verification successful"})
+
+class UserRetrieveView(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    lookup_field = "id"
+
+class UserListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserProfileSerializer
+    queryset = User.objects.all()
+    lookup_field = "id"
+
     
     

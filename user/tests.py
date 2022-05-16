@@ -67,7 +67,7 @@ class TestUser(TestCase):
         self.assertTrue(User.objects.first().check_password(new_password))
     
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
-    def test_password_change_with_unauthenticated_user_with_wrong_old_password(self, authenticate_function):
+    def test_password_change_with_authenticated_user_with_wrong_old_password(self, authenticate_function):
         authenticate_function.return_value = self.user, None
         url = reverse("user:change_password")
         old_password = 'wrong_old_password'

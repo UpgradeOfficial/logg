@@ -26,5 +26,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
+      env: 
+          SECRET_KEY: ${{ SECRET_KEY }}
+          EMAIL_HOST_USER: ${{ EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ EMAIL_HOST_PASSWORD }}
+          EMAIL_HOST_PORT: ${{ EMAIL_HOST_PORT }}
+          GOOOGEL_CLIENT_ID: ${{ GOOOGEL_CLIENT_ID }}
+          PAYSTACK_PUBLIC_KEY: ${{ PAYSTACK_PUBLIC_KEY }}
+          PAYSTACK_PRIVATE_KEY: ${{ PAYSTACK_PRIVATE_KEY }}
+          FLUTTERWAVE_PUBLIC_KEY: ${{ FLUTTERWAVE_PUBLIC_KEY }}
+          FLUTTERWAVE_PRIVATE_KEY: ${{ FLUTTERWAVE_PRIVATE_KEY }}
+          STRIPE_PUBLIC_KEY: ${{ STRIPE_PUBLIC_KEY }}
+          STRIPE_PRIVATE_KEY: ${{ STRIPE_PRIVATE_KEY }}
+          FACEBOOK_APP_ID: ${{ FACEBOOK_APP_ID }}
+          FACEBOOK_APP_SECRET: ${{ FACEBOOK_APP_SECRET }}
+          SOCIAL_SECRET: ${{ SOCIAL_SECRET }}
+          DB_PASSWORD: ${{ DB_PASSWORD }}
+          DB_USER: ${{ DB_USER }}
       run: |
         python manage.py test

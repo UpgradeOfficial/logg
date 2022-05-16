@@ -18,6 +18,13 @@ class User(AbstractUser, CoreModel):
         GOOGLE = "GOOGLE", _("google")
         FACEBOOK = "FACEBOOK", _("facebook")
         TWITTER = "TWITTER", _("twitter")
+    class USER_TYPE(models.TextChoices):
+        SCHOOL = "SCHOOL", _("SCHOOL")
+        ADMINISTRATOR = "ADMINISTRATOR", _("ADMINISTRATOR")
+        TEACHER = "TEACHER", _("TEACHER")
+        GUARDIAN = "GUARDIAN", _("GUARDIAN")
+        STUDENT = "STUDENT", _("STUDENT")
+        STAFF = "STAFF", _("STAFF")
         
     email = models.EmailField(_('email address'), unique=True)
     is_verified = models.BooleanField(default=False)
@@ -26,6 +33,12 @@ class User(AbstractUser, CoreModel):
         max_length=20,
         choices=AUTH_PROVIDER_TYPE.choices,
         default=AUTH_PROVIDER_TYPE.EMAIL,
+        blank=True,
+    )
+    user_type = models.CharField( _("user type"),
+        max_length=20,
+        choices=USER_TYPE.choices,
+        default=USER_TYPE.STUDENT,
         blank=True,
     )
     username = None
@@ -41,21 +54,30 @@ class User(AbstractUser, CoreModel):
     def __str__(self) -> str:
         return super().__str__()
 
-    def get_full_name(self):
-        '''
-        Returns the first_name plus the last_name, with a space in between.
-        '''
-        full_name = '%s %s' % (self.first_name, self.last_name)
-        return full_name.strip()
+    
 
-    def get_short_name(self):
-        '''
-        Returns the short name for the user.
-        '''
-        return self.first_name
+class School(CoreModel):
+    name = models.CharField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        '''
-        Sends an email to this User.
-        '''
-        send_mail(subject, message, from_email, [self.email], **kwargs)
+class Administrator(CoreModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    
+
+class Teacher(CoreModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    
+class Guardian(CoreModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    school = models.ManyToManyField(School)
+
+class Student(CoreModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    classroom = models.ForeignKey("school.Classroom", on_delete=models.CASCADE)
+    
+    
+class Staff(CoreModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)

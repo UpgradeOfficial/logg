@@ -14,8 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from distutils.log import debug
-from django import urls
+
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
@@ -44,15 +43,17 @@ urlpatterns = [
 
     # Admin path
     path('admin/', admin.site.urls),
+    # custom urls for core
+    path('api/', include('core.urls')),
     # custom urls for users
-    path('api/user/', include('user.urls')),
+    path('api/user/', include('user.urls', namespace='user')),
     # custom urls for payment in the future this might need to be changed
     path('api/pay/', include('payment_provider.urls')),
     # custom urls for social authentication
     path('api/social-auth/', include('social_auth.urls')),
     path('', redirect_to_swagger),
 ]
-
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 admin.site.site_header = "Logg Admin"
 admin.site.site_title = "Your Admin Portal"
 admin.site.index_title = "Welcome to Logg Admin Portal"
@@ -60,5 +61,7 @@ admin.site.index_title = "Welcome to Logg Admin Portal"
 handler404 = Custom404.as_view()
 handler500 = "core.views.custom_500_handler"
 
-if debug:
-    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls)),]
+    print("this is running")

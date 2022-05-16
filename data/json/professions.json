@@ -1,0 +1,234 @@
+[
+    {
+        "profession_code": "1",
+        "name": "Acupuncturist"
+    },
+    {
+        "profession_code": "2",
+        "name": "Allergist"
+    },
+    {
+        "profession_code": "3",
+        "name": "Audiologist"
+    },
+    {
+        "profession_code": "4",
+        "name": "Cardiologist"
+    },
+    {
+        "profession_code": "5",
+        "name": "Chiropractor"
+    },
+    {
+        "profession_code": "6",
+        "name": "Dentist"
+    },
+    {
+        "profession_code": "7",
+        "name": "Dermatologist"
+    },
+    {
+        "profession_code": "8",
+        "name": "Dietitian"
+    },
+    {
+        "profession_code": "9",
+        "name": "Ear, Nose & Throat Doctor"
+    },
+    {
+        "profession_code": "10",
+        "name": "Emergency Medicine Physician"
+    },
+    {
+        "profession_code": "11",
+        "name": "Endocrinologist"
+    },
+    {
+        "profession_code": "12",
+        "name": "Endodontist"
+    },
+    {
+        "profession_code": "13",
+        "name": "Eye Doctor"
+    },
+    {
+        "profession_code": "14",
+        "name": "Family Physician"
+    },
+    {
+        "profession_code": "15",
+        "name": "Gastroenterologist"
+    },
+    {
+        "profession_code": "16",
+        "name": "Hand Surgeon"
+    },
+    {
+        "profession_code": "17",
+        "name": "Hearing Specialist"
+    },
+    {
+        "profession_code": "18",
+        "name": "Hematologist"
+    },
+    {
+        "profession_code": "19",
+        "name": "Infectious Disease Specialist"
+    },
+    {
+        "profession_code": "20",
+        "name": "Infertility Specialist"
+    },
+    {
+        "profession_code": "21",
+        "name": "Internist"
+    },
+    {
+        "profession_code": "22",
+        "name": "Naturopathic Doctor"
+    },
+    {
+        "profession_code": "23",
+        "name": "Nephrologist"
+    },
+    {
+        "profession_code": "24",
+        "name": "Neurologist"
+    },
+    {
+        "profession_code": "25",
+        "name": "Neurosurgeon"
+    },
+    {
+        "profession_code": "26",
+        "name": "Nurse Practitioner"
+    },
+    {
+        "profession_code": "27",
+        "name": "Nutritionist"
+    },
+    {
+        "profession_code": "28",
+        "name": "OB-GYN"
+    },
+    {
+        "profession_code": "29",
+        "name": "Oncologist"
+    },
+    {
+        "profession_code": "30",
+        "name": "Ophthalmologist"
+    },
+    {
+        "profession_code": "31",
+        "name": "Optometrist"
+    },
+    {
+        "profession_code": "32",
+        "name": "Oral Surgeon"
+    },
+    {
+        "profession_code": "33",
+        "name": "Orthodontist"
+    },
+    {
+        "profession_code": "34",
+        "name": "Orthopedic Surgeon"
+    },
+    {
+        "profession_code": "35",
+        "name": "Pain Management Specialist"
+    },
+    {
+        "profession_code": "36",
+        "name": "Pediatric Dentist"
+    },
+    {
+        "profession_code": "37",
+        "name": "Pediatric Urgent Care Specialist"
+    },
+    {
+        "profession_code": "38",
+        "name": "Pediatrician"
+    },
+    {
+        "profession_code": "39",
+        "name": "Periodontist"
+    },
+    {
+        "profession_code": "40",
+        "name": "Physiatrist"
+    },
+    {
+        "profession_code": "41",
+        "name": "Physical Therapist"
+    },
+    {
+        "profession_code": "42",
+        "name": "Plastic Surgeon"
+    },
+    {
+        "profession_code": "43",
+        "name": "Podiatrist"
+    },
+    {
+        "profession_code": "44",
+        "name": "Primary Care Doctor"
+    },
+    {
+        "profession_code": "45",
+        "name": "Prosthodontist"
+    },
+    {
+        "profession_code": "46",
+        "name": "Psychiatrist"
+    },
+    {
+        "profession_code": "47",
+        "name": "Psychologist"
+    },
+    {
+        "profession_code": "48",
+        "name": "Psychotherapist"
+    },
+    {
+        "profession_code": "49",
+        "name": "Pulmonologist"
+    },
+    {
+        "profession_code": "50",
+        "name": "Radiologist"
+    },
+    {
+        "profession_code": "51",
+        "name": "Rheumatologist"
+    },
+    {
+        "profession_code": "52",
+        "name": "Sleep Medicine Specialist"
+    },
+    {
+        "profession_code": "53",
+        "name": "Sports Medicine Specialist"
+    },
+    {
+        "profession_code": "54",
+        "name": "Surgeon"
+    },
+    {
+        "profession_code": "55",
+        "name": "Therapist / Counselor"
+    },
+    {
+        "profession_code": "56",
+        "name": "Travel Medicine Specialist"
+    },
+    {
+        "profession_code": "57",
+        "name": "Urgent Care Specialist"
+    },
+    {
+        "profession_code": "58",
+        "name": "Urologist"
+    }
+]

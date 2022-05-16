@@ -24,7 +24,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         'access': str(refresh.access_token),
     }
         return data
-        
+class UserProfileSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = User
+        exclude = ['groups','user_permissions', "password"]
+
 class ForgotPasswordSerializer(serializers.Serializer):
     """
     This is used to serializer the email field 
