@@ -21,7 +21,6 @@ class PaymentTest(TestCase):
     #      }
     #     res = self.client.post(url , data = data)
     #     response_data = res.json()
-    #     print(response_data)
     #     self.assertTrue('authorization_url' in response_data)
 
     @mock.patch('payment_provider.flutterwave.FluterwaveProviver.request', return_value=verification_success)
@@ -33,5 +32,4 @@ class PaymentTest(TestCase):
          }
         res = self.client.post(url , data = data)
         response_data = res.json()
-        print(response_data)
         self.assertTrue("amount" in response_data)

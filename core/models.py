@@ -18,7 +18,10 @@ class CoreModel(models.Model):
 
     def __repr__(self) -> str:
         return self.__str__()
-
+        
+    @classmethod
+    def get_hidden_fields(cls):
+        return ["created_at", "updated_at", "is_deleted", "deleted_at"]
     class Meta:
         abstract = True
 

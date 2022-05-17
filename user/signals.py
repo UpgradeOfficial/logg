@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 def save_profile(sender, instance, created, **kwargs):
     if created:
         pass
-        # print("using has been saved")
         # send_mail('Subject here','Here is the message.','from@example.com', 
         #     [instance.email],  fail_silently=False,)
     

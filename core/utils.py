@@ -31,26 +31,26 @@ def random_with_N_digits(n):
     return randint(range_start, range_end)
 
 
-# def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_list=[]):
-#     """
-#     Send Activation Email To User
-#     """
-#     base_url = input_context.get("host_url", Site.objects.get_current().domain)
+def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_list=[]):
+    """
+    Send Activation Email To User
+    """
+    base_url = input_context.get("host_url", 'Site.objects.get_current().domain')
 
-#     context = {
-#         "site": "dokto",
-#         "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[:-1])),
-#         **input_context,
-#     }
+    context = {
+        "site": "Logg",
+        "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[:-1])),
+        **input_context,
+    }
 
-#     # render email text
-#     email_html_message = render_to_string(template_name, context)
+    # render email text
+    email_html_message = render_to_string(template_name, context)
 
-#     msg = EmailMultiAlternatives(
-#         subject=subject,
-#         body=email_html_message,
-#         from_email=settings.EMAIL_HOST_USER,
-#         to=[to_email],
-#     )
-#     msg.attach_alternative(email_html_message, "text/html")
-#     msg.send()
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=email_html_message,
+        from_email=settings.EMAIL_HOST_USER,
+        to=[to_email],
+    )
+    msg.attach_alternative(email_html_message, "text/html")
+    msg.send()

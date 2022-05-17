@@ -15,11 +15,9 @@ class PaystackProvider(Gateway):
             "Content-Type": "application/json"
         }
         response = requests.request(method, PAYSTACK_BASE_URL + path, json=payload, params=params, headers=headers)
-        # print("\n"*12,response.json(),response.status_code )
         if response.status_code != 200:
             raise Exception()
         response_dict = response.json()
-        # print("\n"*12, response_dict,response_dict['status'] )
         if response_dict['status'] != True:
             raise Exception()
         return response_dict

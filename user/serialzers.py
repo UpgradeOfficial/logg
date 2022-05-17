@@ -1,19 +1,48 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from core.utils import send_mail
+from django.conf import settings
+from school.models import ClassRoom
+from .models import School, Student, User
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     tokens = serializers.SerializerMethodField()
-
+    classroom = serializers.UUIDField(required=False, write_only=True)
+    school = serializers.UUIDField(required=False, write_only=True)
     class Meta:
         model = User
-        exclude = ['groups','user_permissions']
+        exclude = ['groups','user_permissions', 'auth_povider'] + User.get_hidden_fields()
+        read_only_fields = ('is_active', 'is_staff')
+        extra_kwargs = {
+            'user_type': {'write_only': True},
+            
+        }
     
     def create(self, validated_data):
-        password = validated_data.pop('password')
+        password = validated_data.pop('password', None)
+        school_id = validated_data.pop('school', None)
+        classroom_id = validated_data.pop('classroom', None)
         user = super().create(validated_data)
+        if password is None:
+            raise serializers.ValidationError("You did not provide a valid password")
         user.set_password(password)
         user.save()
+        if validated_data.get('user_type', User.USER_TYPE.STUDENT) == User.USER_TYPE.STUDENT:
+            school = get_object_or_404(School, id=school_id)
+            classroom = get_object_or_404(ClassRoom, id=classroom_id)
+            Student.objects.create(user=user, school=school, classroom=classroom)
+        elif validated_data.get('user_type') == User.USER_TYPE.SCHOOL:
+            School.objects.create(user=user)
+        
+        context = {
+            'name':user.first_name or "Guest",
+            'link': "https://nairaland.com/",
+            'site': "Logg",
+            'MEDIA_URL': 'media/'
+        }
+        send_mail(subject="Welcome To Logg", to_email=user.email, input_context=context, template_name='account_verification.html', cc_list=[], bcc_list=[])
         return user
         
 

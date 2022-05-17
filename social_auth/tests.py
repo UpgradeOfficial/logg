@@ -12,4 +12,3 @@ class TestFacebookSocialAuthLogin(TestCase):
         }
         res = self.client.post(url, data=data)
         response_dict = res.json()
-        print(response_dict)

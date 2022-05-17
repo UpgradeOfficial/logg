@@ -3,12 +3,13 @@ from unittest import mock
 from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
-from core.tests.models_setups import create_user
+from core.tests.models_setups import create_class_room, create_school, create_user
 from core.utils import jwt_encode
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
+from school.models import ClassRoom
 
-from user.models import User
+from user.models import School, Student, User
 
 # Create your tests here.
 class TestUser(TestCase):
@@ -19,24 +20,38 @@ class TestUser(TestCase):
         # self.user = User.objects.create_user(email="odeyemiincrease@yahoo.c", password='password')
         self.user = create_user()
 
-    def test_user_registration_right_information(self): 
-       
-
+    def test_student_registration_right_information(self):
+        classroom = create_class_room()
+        school = classroom.school
         data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
         image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
-        data= {"email":"i@i.com", "password": "new_password", 'image':image}
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, "school":school.id, "classroom":classroom.id}
         response = self.client.post(url, data=data)
         response_dict = response.json()
-        print(response_dict)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(User.objects.count(),2)
+        # users are school, student, setup user
+        self.assertEqual(User.objects.count(),3)
         self.assertTrue(User.objects.filter(email="i@i.com").exists())
         self.assertTrue('tokens' in response_dict)
         self.assertTrue('access' in response_dict["tokens"])
         self.assertTrue('refresh' in response_dict["tokens"])
         #check if password is hashed
         self.assertNotEqual(data['password'], User.objects.first().password)
+        student= Student.objects.first()
+        # check if the student belong to the classroom and has an email with the data we passed
+        self.assertTrue(Student.objects.filter(classroom=classroom, user__email=data.get('email')).exists())
+    
+    def test_school_registration_right_information(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        url = reverse("user:register")
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"SCHOOL"}
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 201)
+        school = School.objects.first()
+        self.assertEqual(school.user.email, data.get('email'))
 
     def test_user_registration_email_in_database(self):
         data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))

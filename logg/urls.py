@@ -64,4 +64,3 @@ handler500 = "core.views.custom_500_handler"
 # if settings.DEBUG:
 #     import debug_toolbar
 #     urlpatterns += [path('__debug__/', include(debug_toolbar.urls)),]
-#     print("this is running")
