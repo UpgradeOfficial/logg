@@ -2,12 +2,16 @@
 # Create your views here.
 import json
 import os
+from re import sub
 from django.shortcuts import redirect
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_404_NOT_FOUND
 from rest_framework.permissions import AllowAny
 from django.http import JsonResponse
+from .serializers import ContactUsSerializer
+from core.utils import send_mail
 
 
 
@@ -18,6 +22,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 from drf_spectacular.types import OpenApiTypes
+from yaml import serialize
 
 
 
@@ -75,3 +80,21 @@ class PhoneCode(APIView):
         data = json.load(open(os.path.join(settings.BASE_DIR , "data" , "json","country_phone_code.json")))
         return Response({"status_code": 200, "message": "Success.", "result": data})
 
+class ContactUsView(APIView):
+    serializer_class = ContactUsSerializer()
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ContactUsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        subject = serializer.validated_data['subject']
+        email = serializer.validated_data['email']
+        text = serializer.validated_data['text']
+        name = serializer.validated_data['name']      
+        context = {
+            'name':name,
+            'text':text
+        }
+        send_mail(subject=subject, to_email=email, input_context=context, template_name='contact_us.html', cc_list=[], bcc_list=[])
+        print('sented....')
+        return Response(status=status.HTTP_200_OK, data={'message':"You message has been received and is been processed."})

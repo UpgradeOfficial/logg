@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from core.utils import send_mail
 from django.conf import settings
 from school.models import ClassRoom
-from .models import School, Student, User
+from .models import Administrator, Guardian, School, Staff, Student, Teacher, User
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -35,6 +35,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             Student.objects.create(user=user, school=school, classroom=classroom)
         elif validated_data.get('user_type') == User.USER_TYPE.SCHOOL:
             School.objects.create(user=user)
+        elif validated_data.get('user_type') == User.USER_TYPE.ADMINISTRATOR:
+            school = get_object_or_404(School, id=school_id)
+            Administrator.objects.create(user=user, school=school)
+        elif validated_data.get('user_type') == User.USER_TYPE.GUARDIAN:
+            Guardian.objects.create(user=user)
+        elif validated_data.get('user_type') == User.USER_TYPE.STAFF:
+            Staff.objects.create(user=user)
+        elif validated_data.get('user_type') == User.USER_TYPE.TEACHER:
+            school = get_object_or_404(School, id=school_id)
+            Teacher.objects.create(user=user, school=school)
         
         context = {
             'name':user.first_name or "Guest",

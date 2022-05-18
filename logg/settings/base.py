@@ -239,3 +239,5 @@ CARD_PAYMENT_SUCCESS_URL = "https://www.thinkalpha.com.ng/"
 # Image setup
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+SITE_ID=1
