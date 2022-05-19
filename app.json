@@ -10,7 +10,7 @@
         "web-app"
     ],
     "env": {
-        "SECRET_KEY=django-insecure-jn":"*f*_1ww_+2b!$3sbe%^3bsgc^%zzf-52l53!*!x%m)@7kz=",
+        "SECRET_KEY":"django-insecure-jn*f*_1ww_+2b!$3sbe%^3bsgc^%zzf-52l53!*!x%m)@7kz=",
         "EMAIL_HOST_USER":"mytestmail145@gmail.com",
         "EMAIL_HOST_PASSWORD":"philip1234@iO",
         "EMAIL_HOST_PORT":"465",
