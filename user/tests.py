@@ -9,9 +9,10 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from school.models import ClassRoom
 
-from user.models import School, Student, User
+from user.models import Administrator, Guardian, School, Staff, Student, Teacher, User
 
 # Create your tests here.
+
 class TestUser(TestCase):
 
     def setUp(self):
@@ -23,8 +24,8 @@ class TestUser(TestCase):
     def test_student_registration_right_information(self):
         classroom = create_class_room()
         school = classroom.school
-        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
-        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
         data= {"email":"i@i.com", "password": "new_password", 'image':image, "school":school.id, "classroom":classroom.id}
         response = self.client.post(url, data=data)
@@ -43,8 +44,8 @@ class TestUser(TestCase):
         self.assertTrue(Student.objects.filter(classroom=classroom, user__email=data.get('email')).exists())
     
     def test_school_registration_right_information(self):
-        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
-        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
         data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"SCHOOL"}
         response = self.client.post(url, data=data)
@@ -52,6 +53,54 @@ class TestUser(TestCase):
         self.assertEqual(response.status_code, 201)
         school = School.objects.first()
         self.assertEqual(school.user.email, data.get('email'))
+
+    def test_guardian_registration_right_information(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        url = reverse("user:register")
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"GUARDIAN"}
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 201)
+        guardian = Guardian.objects.first()
+        self.assertEqual(guardian.user.email, data.get('email'))
+
+    def test_teacher_registration_right_information(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        school = create_school()
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        url = reverse("user:register")
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"TEACHER", "school":school.id}
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 201)
+        teacher = Teacher.objects.first()
+        self.assertEqual(teacher.user.email, data.get('email'))
+        self.assertEqual(teacher.school, school)
+
+    def test_administrator_registration_right_information(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        school = create_school()
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        url = reverse("user:register")
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"ADMINISTRATOR", "school":school.id}
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 201)
+        administrator = Administrator.objects.first()
+        self.assertEqual(administrator.user.email, data.get('email'))
+        self.assertEqual(administrator.school, school)
+
+    def test_staff_registration_right_information(self):
+        data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
+        url = reverse("user:register")
+        data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"STAFF"}
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 201)
+        staff = Staff.objects.first()
+        self.assertEqual(staff.user.email, data.get('email'))
 
     def test_user_registration_email_in_database(self):
         data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))

@@ -22,7 +22,9 @@ from drf_spectacular.utils import (
     OpenApiResponse,
 )
 from drf_spectacular.types import OpenApiTypes
-from yaml import serialize
+from .utils import render_to_pdf
+from django.http import HttpResponse
+from django.views import View
 
 
 
@@ -96,5 +98,31 @@ class ContactUsView(APIView):
             'text':text
         }
         send_mail(subject=subject, to_email=email, input_context=context, template_name='contact_us.html', cc_list=[], bcc_list=[])
-        print('sented....')
         return Response(status=status.HTTP_200_OK, data={'message':"You message has been received and is been processed."})
+
+
+        #Opens up page as PDF
+class ViewPDF(View):
+	def get(self, request, *args, **kwargs):
+
+		pdf = render_to_pdf('contact_us.html', context_dict={'name':"Increase", 'text':"this is it"})
+		return HttpResponse(pdf, content_type='application/pdf')
+
+
+#Automaticly downloads to PDF file
+class DownloadPDF(View):
+	def get(self, request, *args, **kwargs):
+		
+		pdf = render_to_pdf('contact_us.html', context_dict={'name':"Increase", 'text':"this is it"})
+
+		response = HttpResponse(pdf, content_type='application/pdf')
+		filename = "Invoice_%s.pdf" %("12341231")
+		content = "attachment; filename='%s'" %(filename)
+		response['Content-Disposition'] = content
+		return response
+
+
+
+def index(request):
+	context = {}
+	return render(request, 'app/index.html', context)
