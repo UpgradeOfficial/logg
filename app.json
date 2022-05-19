@@ -1,0 +1,17 @@
+{
+    "name":"Logg",
+    "description": "This app helps school manage all if not almost all there systems",
+    "repository": "https://github.com/UpgradeOfficial/logg",
+    "website": "https://www.thinkalpha.com.ng/",
+    "keywords": [
+        "school",
+        "django",
+        "python",
+        "web-app"
+    ],
+    "buildpacks": [
+        {
+          "url": "https://github.com/heroku/heroku-buildpack-python.git"
+        }
+    ]
+}

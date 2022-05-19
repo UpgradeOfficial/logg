@@ -9,3 +9,7 @@
 9. python manage.py flush
 10. flake8
 11. pip freeze > requirements.txt
+
+release: python manage.py makemigrations --noinput 
+release: python manage.py collectstatic --noinput 
+release: python manage.py migrate --noinput 

@@ -55,6 +55,7 @@ urlpatterns = [
     path('', redirect_to_swagger),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_ROOT)
 admin.site.site_header = "Logg Admin"
 admin.site.site_title = "Your Admin Portal"
 admin.site.index_title = "Welcome to Logg Admin Portal"

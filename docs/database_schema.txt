@@ -1,0 +1,1 @@
+https://github.com/veryacademy/django-ecommerce-project/tree/main/Part-10%20Pytest%20Testing%201/docs
