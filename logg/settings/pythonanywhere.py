@@ -8,14 +8,13 @@ ALLOWED_HOSTS = ['.pythonanywhere.com']
 
 
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'logg', # Database
-        'USER': config('DB_USER'), # Owner
-        'PASSWORD': config('DB_PASSWORD'), # Password when install postgres
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'logg$default',
+        'USER': 'logg',
+        'PASSWORD': config("PYTHONANYWHERE_DB_PASSWORD"),
+        'HOST': 'logg.mysql.pythonanywhere-services.com',
     }
 }
-
