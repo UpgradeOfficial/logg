@@ -12,13 +12,13 @@ class UserAdminConfig(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'first_name')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
-        ('Personal', {'fields': ('is_deleted', 'deleted_at')})
+        ('Personal', {'fields': ('is_deleted', 'deleted_at', "image")})
     )
     # Add new user
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'password1', 'password2')}),
+            'fields': ('email', 'first_name','image', 'password1', 'password2')}),
         
     )
     
