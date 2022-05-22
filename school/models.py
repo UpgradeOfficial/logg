@@ -37,17 +37,26 @@ class Fee(CoreModel):
 class ClassRoom(CoreModel):
     name = models.CharField(max_length=100)
     school = models.ForeignKey("user.School", on_delete=models.CASCADE)
+    class_teacher = models.OneToOneField('user.Teacher', on_delete=models.PROTECT, null=True, blank=True)
 
 
 class Subject(CoreModel):
     name = models.CharField(max_length=100)
     classroom = models.ForeignKey("school.classroom", on_delete=models.SET_NULL, null=True, blank=True)
+    teacher = models.ManyToManyField('user.Teacher')
+
+
 
 class Score(CoreModel):
     subject = models.ForeignKey('school.Subject', on_delete=models.CASCADE)
     student = models.ForeignKey('user.Student', on_delete=models.CASCADE)
     score = models.DecimalField(decimal_places=2, max_digits=30)
     total_score = models.DecimalField(decimal_places=2, max_digits=30)
+
+class ClassRoomAttendance(CoreModel):
+    student = models.ForeignKey('user.student', on_delete=models.PROTECT)
+    classroom = models.ForeignKey('school.Classroom', on_delete=models.PROTECT)
+    present = models.BooleanField(default=True)
 
 class Question(CoreModel):
     class QUESTION_TYPE(models.TextChoices):

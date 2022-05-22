@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 
-from core.models import CoreModel
+from core.models import CoreModel, CoreUserModel
 
 from .managers import UserManager
 def upload_to(instance, filename):
@@ -56,28 +56,28 @@ class User(AbstractUser, CoreModel):
 
     
 
-class School(CoreModel):
+class School(CoreModel, CoreUserModel):
     name = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-class Administrator(CoreModel):
+class Administrator(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     
 
-class Teacher(CoreModel):
+class Teacher(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     
-class Guardian(CoreModel):
+class Guardian(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     school = models.ManyToManyField(School)
 
-class Student(CoreModel):
+class Student(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     classroom = models.ForeignKey("school.Classroom", on_delete=models.CASCADE)
     
     
-class Staff(CoreModel):
+class Staff(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

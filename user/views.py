@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from core.utils import jwt_decode, jwt_encode
+import logging
 
 from .models import User
 from .serialzers import (ForgotPasswordSerializer,
@@ -13,6 +14,8 @@ from .serialzers import (ForgotPasswordSerializer,
                         ResetPasswordSerializer, 
                         UserProfileSerializer, 
                         UserRegistrationSerializer)
+
+logger = logging.getLogger('main')
 
 # Create your views here.
 class InitiatePasswordResetView(APIView):
@@ -95,6 +98,7 @@ class UserRetrieveView(generics.RetrieveAPIView):
     lookup_field = "id"
 
 class UserListView(generics.ListAPIView):
+    logger.info("this is a test")
     permission_classes = [AllowAny]
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()

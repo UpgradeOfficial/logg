@@ -50,6 +50,8 @@ urlpatterns = [
     path('api/user/', include('user.urls', namespace='user')),
     # custom urls for payment in the future this might need to be changed
     path('api/pay/', include('payment_provider.urls')),
+    # custom urls for school 
+    path('api/school/', include('school.urls')),
     # custom urls for social authentication
     path('api/social-auth/', include('social_auth.urls')),
     path('', redirect_to_swagger),

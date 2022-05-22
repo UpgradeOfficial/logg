@@ -25,4 +25,12 @@ class CoreModel(models.Model):
     class Meta:
         abstract = True
 
+class CoreUserModel(models.Model):
+    
+    is_verified = models.BooleanField(default=False)
+    notification_eamil= models.EmailField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
 

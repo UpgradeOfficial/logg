@@ -18,3 +18,5 @@ DATABASES = {
         'HOST': 'logg.mysql.pythonanywhere-services.com',
     }
 }
+
+CARD_PAYMENT_SUCCESS_URL = "https://logg.pythonanywhere.com/swagger/"

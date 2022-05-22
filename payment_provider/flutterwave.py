@@ -1,6 +1,6 @@
 import logging
 from django.conf import settings
-
+from rest_framework.exceptions import AuthenticationFailed
 from core.utils import random_with_N_digits
 from .gateway import Gateway, GatewayException
 import requests
@@ -59,7 +59,9 @@ class FluterwaveProviver(Gateway):
         data = data['data']
         if data['status'] != 'successful':
             raise GatewayException("Payment not found")
-        # # if amount_data != payment_amount :
-        # #     logging.error(f'amount={payment_amount} requested, but {amount_data} found in payment')
-        # #     raise GatewayException("Invalid payment amount")
         return data
+
+    def webhook(self, request):
+        if request.headers.get('Verif-Hash') != settings.FLUTTERWAVE_SECRET_HASH:
+            raise AuthenticationFailed()
+        return request.data

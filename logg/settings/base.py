@@ -153,7 +153,7 @@ REST_FRAMEWORK = {
 
     ],
     "DEFAULT_PERMISSION_CLASSES":[
-        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+        "rest_framework.permissions.IsAuthenticated"
     ],
     "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 20,
@@ -228,12 +228,17 @@ PAYSTACK_PRIVATE_KEY = config('PAYSTACK_PRIVATE_KEY')
 
 FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
 FLUTTERWAVE_PRIVATE_KEY = config('FLUTTERWAVE_PRIVATE_KEY')
+FLUTTERWAVE_SECRET_HASH = config('FLUTTERWAVE_SECRET_HASH')
+
 
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
 
 SOCIAL_SECRET = config('SOCIAL_SECRET')
-CARD_PAYMENT_SUCCESS_URL = "https://www.thinkalpha.com.ng/"
+
+# this is what it will use even if one is provided on the server
+# as long as it is passed
+CARD_PAYMENT_SUCCESS_URL = "https://logg.pythonanywhere.com/"
 
 
 # Image setup
@@ -241,3 +246,34 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 SITE_ID=1
+
+# Logging settings
+LOGGING={
+    
+   "version":1,
+   "disable_settings_loggers":False, # remove all other loggers
+   "formatters":{ # the format you want your log in
+        'main_formatter':{
+            'format':"{asctime} - {levelname} - {module} - {message}",
+            'style':"{"
+        }
+   },
+   "handlers":{ # where do you want to keep the log
+        'console':{
+            'class':"logging.StreamHandler", # this will output the log it to the console
+            'formatter':"main_formatter"
+        },
+        'file':{
+            'class':"logging.FileHandler", # this will output the log it to the console
+            'formatter':"main_formatter",
+            "filename":f"info.log"
+        }
+   },
+   "loggers":{
+       'main':{
+           'handlers':['file', 'console'],
+           'propagate': True,
+           'level': "INFO"
+       }
+   },
+}

@@ -1,5 +1,10 @@
+import json
+from multiprocessing.connection import Client
 import requests
+import hmac
+import hashlib
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from core.utils import random_with_N_digits
 from .gateway import Gateway, GatewayException
@@ -50,3 +55,26 @@ class PaystackProvider(Gateway):
         #     logging.error(f'amount={payment_amount} requested, but {amount_data} found in payment')
         #     raise GatewayException("Invalid payment amount")
         return data
+
+    def generate_digest(self, data, secret=settings.PAYSTACK_PRIVATE_KEY):
+        return hmac.new(
+        secret.encode("utf-8"), msg=json.dumps(data).encode('utf-8'), digestmod=hashlib.sha512
+    ).hexdigest()
+
+    def webhook(self, request ):
+        IP_whitelisting =["52.31.139.75", "52.49.173.169", "52.214.14.220"]
+        
+        webhook_data = request.data
+        hash = self.generate_digest(webhook_data)
+        if (request.headers['X-Forwarded-For'] in IP_whitelisting) == False:
+            raise ValidationError(f"Ip not allowed {request.headers['X-Forwarded-For']}")
+        if hash != request.headers["X-Paystack-Signature"]:
+            raise ValidationError("MAC authentication failed")
+
+        if webhook_data["event"] == "charge.success":
+            pass
+
+        return webhook_data
+        
+    def create_split_account(self ):
+        pass

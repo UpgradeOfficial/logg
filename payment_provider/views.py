@@ -1,8 +1,11 @@
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny
+
+from payment_provider import flutterwave, paystack
 from .serializers import PaymentSerializer, PaymentVerificationSerializer
 from .gateway import Gateway
 # Create your views here.
@@ -26,8 +29,24 @@ class PaymentVerificationView(APIView):
         data = request.data
         provider = Gateway().get_payment_gateway(data['provider'])
         result=provider.verify_payment(data['tx_ref'])
-
+        
         return Response(status=status.HTTP_200_OK, data=result)
+
+class PaystackWebhookView(APIView):
+    permission_classes = [AllowAny]
+
+    def  post(self, request, *args, **kwargs):
+        data = paystack.PaystackProvider().webhook(request)
+        return Response(status=status.HTTP_200_OK)
+        
+class FlutterwaveWebhookView(APIView):
+    permission_classes = [AllowAny]
+
+    def  post(self, request, *args, **kwargs):
+        
+        data = flutterwave.FluterwaveProviver().webhook(request)
+        return Response(status=status.HTTP_200_OK)
+
 
 
 
