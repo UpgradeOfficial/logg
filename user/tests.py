@@ -19,30 +19,28 @@ class TestUser(TestCase):
         #this is needed to hash the password
         #create user will not hash the password
         # self.user = User.objects.create_user(email="odeyemiincrease@yahoo.c", password='password')
-        self.user = create_user()
+        self.user = create_user() # 1 user
 
     def test_student_registration_right_information(self):
-        classroom = create_class_room()
+        classroom = create_class_room() # create a teacher, teacher also create school , and a school 3 user 
         school = classroom.school
         image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
         image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
-        data= {"email":"i@i.com", "password": "new_password", 'image':image, "school":school.id, "classroom":classroom.id}
+        data= {"email":"i@i.com", "password": "new_password", 'image':image}
         response = self.client.post(url, data=data)
         response_dict = response.json()
         self.assertEqual(response.status_code, 201)
         # users are school, student, setup user
-        self.assertEqual(User.objects.count(),3)
+        self.assertEqual(User.objects.count(),5)
         self.assertTrue(User.objects.filter(email="i@i.com").exists())
         self.assertTrue('tokens' in response_dict)
         self.assertTrue('access' in response_dict["tokens"])
         self.assertTrue('refresh' in response_dict["tokens"])
         #check if password is hashed
         self.assertNotEqual(data['password'], User.objects.first().password)
-        student= Student.objects.first()
-        # check if the student belong to the classroom and has an email with the data we passed
-        self.assertTrue(Student.objects.filter(classroom=classroom, user__email=data.get('email')).exists())
-    
+   
+        
     def test_school_registration_right_information(self):
         image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
         image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')

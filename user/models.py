@@ -75,8 +75,6 @@ class Guardian(CoreModel, CoreUserModel):
 
 class Student(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    school = models.ForeignKey(School, on_delete=models.CASCADE)
-    classroom = models.ForeignKey("school.Classroom", on_delete=models.CASCADE)
     
     
 class Staff(CoreModel, CoreUserModel):

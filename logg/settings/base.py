@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     # Custom Apps
-    
     'user',
     'school',
     "social_auth",
@@ -256,12 +255,20 @@ LOGGING={
         'main_formatter':{
             'format':"{asctime} - {levelname} - {module} - {message}",
             'style':"{"
+        },
+        'debug_formatter':{
+            'format':"{asctime} - {message}",
+            'style':"{"
         }
    },
    "handlers":{ # where do you want to keep the log
         'console':{
             'class':"logging.StreamHandler", # this will output the log it to the console
             'formatter':"main_formatter"
+        },
+        'dev_console':{
+            'class':"logging.StreamHandler", # this will output the log it to the console
+            'formatter':"debug_formatter"
         },
         'file':{
             'class':"logging.FileHandler", # this will output the log it to the console
@@ -274,6 +281,11 @@ LOGGING={
            'handlers':['file', 'console'],
            'propagate': True,
            'level': "INFO"
+       },
+       'debug':{
+           'handlers':['dev_console'],
+           'propagate': True,
+           'level': "DEBUG"
        }
    },
 }

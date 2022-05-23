@@ -30,9 +30,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         if validated_data.get('user_type', User.USER_TYPE.STUDENT) == User.USER_TYPE.STUDENT:
-            school = get_object_or_404(School, id=school_id)
-            classroom = get_object_or_404(ClassRoom, id=classroom_id)
-            Student.objects.create(user=user, school=school, classroom=classroom)
+            Student.objects.create(user=user)
         elif validated_data.get('user_type') == User.USER_TYPE.SCHOOL:
             School.objects.create(user=user)
         elif validated_data.get('user_type') == User.USER_TYPE.ADMINISTRATOR:

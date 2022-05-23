@@ -98,7 +98,6 @@ class UserRetrieveView(generics.RetrieveAPIView):
     lookup_field = "id"
 
 class UserListView(generics.ListAPIView):
-    logger.info("this is a test")
     permission_classes = [AllowAny]
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()

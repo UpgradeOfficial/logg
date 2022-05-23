@@ -21,4 +21,5 @@ class Payment(CoreModel):
     amount = models.DecimalField(decimal_places=2, max_digits=30)
     user = models.ForeignKey('user.User', on_delete=models.PROTECT, blank=True, null=True)
     other_info = models.TextField()
+    paid = models.BooleanField(default=False)
     

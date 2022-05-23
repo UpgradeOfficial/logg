@@ -15,7 +15,7 @@ DATABASES = {
         'NAME': 'logg$default',
         'USER': 'logg',
         'PASSWORD': config("PYTHONANYWHERE_DB_PASSWORD"),
-        'HOST': 'logg.mysql.pythonanywhere-services.com',
+        'HOST': config('PYTHONANYWHERE_DB_HOST'),
     }
 }
 
