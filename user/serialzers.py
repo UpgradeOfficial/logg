@@ -5,8 +5,19 @@ from core.utils import send_mail
 from django.conf import settings
 from school.models import ClassRoom
 from .models import Administrator, Guardian, School, Staff, Student, Teacher, User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
 
+        # Add custom claims
+        token['email'] = user.email
+        token['user_type'] = user.user_type
+        # ...
+
+        return token
 class UserRegistrationSerializer(serializers.ModelSerializer):
     tokens = serializers.SerializerMethodField()
     classroom = serializers.UUIDField(required=False, write_only=True)

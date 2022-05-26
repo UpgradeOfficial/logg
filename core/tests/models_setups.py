@@ -46,6 +46,8 @@ def create_class_room(name=None, school=None, teacher = None):
         school = create_school()
     if not name:
         name = "primary 1"
+    if teacher=="leave":
+        return ClassRoom.objects.create(name=name, school=school)
     if not teacher:
         teacher = create_teacher()
     return ClassRoom.objects.create(name=name, school=school, class_teacher= teacher)

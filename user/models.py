@@ -60,6 +60,9 @@ class School(CoreModel, CoreUserModel):
     name = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f"{self.name}_{self.user.email}_{self.user.user_type}"
+
 class Administrator(CoreModel, CoreUserModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)

@@ -20,3 +20,4 @@
 11. installed flake8 and use it to check the quality of our code. we create
 	a setup config file (setup.cfg) to exclude some files/folders (command to run the settigs (10) in commands.txt file)
 12. Setup github actions to automate testing 
+get a single branch (command to run the settigs (10) in commands.txt file)

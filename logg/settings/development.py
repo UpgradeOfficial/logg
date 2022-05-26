@@ -17,7 +17,7 @@ MIDDLEWARE+=[]
 
 
 CORS_ALLOWED_ORIGINS +=[
-    "http://localhost:300"
+    "http://localhost:3000"
 
 ]
 

@@ -1,0 +1,63 @@
+version: '3'
+  
+services:
+  db:
+    container_name: dokto-postgres
+    command: postgres -N 500 -B 4096MB
+    image: postgres
+    env_file: .env
+    hostname: postgres
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+  redis:
+    container_name: 'dokto-redis'
+    image: 'redis'
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+  web:
+    container_name: dokto-web
+    hostname: dokto-web
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    # command: sh -c "python manage.py migrate && gunicorn Dokto_Backend.wsgi:application --bind 0.0.0.0:8000 --workers=3"
+    volumes:
+      - ./:/Dokto-Backend
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    env_file: .env
+  nginx:
+    container_name: dokto-nginx
+    image: nginx:1.15-alpine
+    volumes:
+      - ./nginx/nginx:/etc/nginx/conf.d
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    env_file: .env
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - web
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+      - ./log/letsencrypt:/var/log/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+volumes:
+   postgresql-data:

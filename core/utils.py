@@ -1,4 +1,3 @@
-import os
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -7,7 +6,10 @@ from random import randint
 from datetime import datetime, timedelta
 import jwt
 
-from django.shortcuts import render
+
+# from azure.storage.blob import generate_blob_sas, AccountSasPermissions, BlobServiceClient, BlobClient, ContainerClient, __version__
+from datetime import datetime, timedelta
+
 from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -30,6 +32,8 @@ def jwt_encode(payload):
 def jwt_decode(encoded_jwt):
     result = jwt.decode(encoded_jwt, settings.SECRET_KEY, algorithms=["HS256"])
     return result
+
+
 
 
 
@@ -70,3 +74,53 @@ def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_l
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
+
+
+
+
+
+
+
+
+####################################### unimplemented functions #################################################
+# def upload_image_and_generate_image_url(file_name, file):
+#     # Account Name
+#     account_name='doktoteststore'
+#     # Container Name
+#     container_name='images'
+#     # Blob Name
+#     blob_name=file_name
+#     # EndpointSuffix
+#     EndpointSuffix="core.windows.net"
+#     # Account_Key
+#     account_key="pRupu5YVoRhviHjed02kWgA20mK4a468FSncBfQVgXOY950Jd4uOmt8bEtWRDuS5Rus4FzdlS++m+AStPLfa/w=="
+#     #  connection string
+#     connect_str = f"DefaultEndpointsProtocol=https;AccountName={account_name};AccountKey={account_key};EndpointSuffix={EndpointSuffix}"
+#     url = f"https://{account_name}.blob.{EndpointSuffix}/{container_name}/{blob_name}"
+#     # Create the BlobServiceClient object which will be used to create a container client
+#     blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+#     # create a blob instance
+#     blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
+#     # upload the blob
+#     blob_client.upload_blob(file)
+#     # shared_access_signature
+#     sas_token = generate_blob_sas(
+#         account_name=account_name,
+#         account_key=account_key,
+#         container_name=container_name,
+#         blob_name=blob_name,
+#         permission=AccountSasPermissions(read=True),
+#         # how long the access is allowed before link access is revoked
+#         expiry=datetime.utcnow() + timedelta(hours=1)
+#     )
+#     # generate the blob
+#     url_with_sas = f"{url}?{sas_token}"
+#     # return the url to access the blob
+#     return url_with_sas
+#     # Tryed on my system with an image it workes
+#     # upload_file_path = "C:/Users/HP/Pictures/test.png"
+#     # file = open(upload_file_path, 'rb')
+#     # url_to_image_on_azure_blob = upload_image_and_generate_image_url(file_name='image.png', file=file)
+#     # file.close()
+
+#     #print(url_to_image_on_azure_blob)

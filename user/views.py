@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from core.utils import jwt_decode, jwt_encode
 import logging
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serialzers import MyTokenObtainPairSerializer
 
 from .models import User
 from .serialzers import (ForgotPasswordSerializer,
@@ -102,6 +104,12 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
     lookup_field = "id"
+
+
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
     
     

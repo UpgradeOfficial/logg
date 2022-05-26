@@ -72,6 +72,23 @@ class TestClassRoom(TestCase):
         self.assertEqual(classroom.school, self.school1)
         self.assertNotEqual(classroom.school, self.school2)
 
+    @mock.patch('core.authentication.TokenAuthentication.authenticate')
+    def test_get_classroom(self, authenticate_function):
+        authenticate_function.return_value = self.school1.user, None
+        classroom1 = create_class_room(name="Primary 1", school=self.school1, teacher = "leave")
+        classroom2 = create_class_room(name="Primary 2", school=self.school1, teacher = "leave")
+        classroom3 = create_class_room(name="Primary 3", school=self.school1, teacher = "leave")
+        classroom4 = create_class_room(name="Primary 3", school=self.school2, teacher = "leave")
+        url = reverse("school:create_classroom")
+        res = self.client.get(url)
+        res_json = res.json()
+        self.assertEqual(res.status_code, 200)
+        classroom = ClassRoom.objects.get(id=classroom1.id)
+        self.assertEqual(len(res_json['results']), 3)
+        self.assertNotEqual(classroom.school, self.school2)
+        self.assertEqual(classroom.school, self.school1)
+        self.assertNotEqual(classroom.school, self.school2)
+
 
 class TestTerm(TestCase):
         
@@ -140,6 +157,8 @@ class TestClassRoomAttendance(TestCase):
         self.assertEqual(classroomattendance.students.count(), 4)
         self.assertIn(Student1, classroomattendance.students.all())
         self.assertNotIn(Student5, classroomattendance.students.all())
+
+    
 
 class TestSubject(TestCase):
 
