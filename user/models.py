@@ -1,12 +1,15 @@
-from email.policy import default
+
+from django.conf import settings
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from core.utils import send_mail
 # Create your models here.
 
 
 from core.models import CoreModel, CoreUserModel
+from core.utils import ExpiringActivationTokenGenerator
 
 from .managers import UserManager
 def upload_to(instance, filename):
@@ -53,6 +56,37 @@ class User(AbstractUser, CoreModel):
 
     def __str__(self) -> str:
         return super().__str__()
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def send_email_verification_mail(self):
+        template = "account_verification.html"
+
+        confirmation_token = ExpiringActivationTokenGenerator().generate_token(
+            text=self.email
+        )
+
+        link = (
+            "/".join(
+                [
+                    settings.FRONTEND_URL,
+                    "api",
+                    "user"
+                    "confirm_email",
+                    confirmation_token.decode('utf-8')
+                ]
+            )
+        )
+        send_mail(
+            to_email=self.email,
+            subject=f"Welcome to Logg, please verify your email address",
+            template_name=template,
+            input_context={
+                "name": self.first_name or self.email,
+                "link": link
+            },
+        )
 
     
 

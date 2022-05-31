@@ -31,7 +31,7 @@ SECRET_KEY = config("SECRET_KEY")
 ALLOWED_HOSTS = []
 
 
-# Application definition
+######################################### Application definition ###########################################
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     "social_auth",
     "payment_provider"
 ]
-
+########################################### MIDDLEWARE ###########################################
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     # Security middleware for whitenose
@@ -72,9 +72,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+########################################### ROOT URL ###########################################
 
 ROOT_URLCONF = 'logg.urls'
 
+########################################### TEMPLATES ###########################################
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -90,10 +92,10 @@ TEMPLATES = [
         },
     },
 ]
-
+########################################### WSGI CONF ###########################################
 WSGI_APPLICATION = 'logg.wsgi.application'
 
-
+###########################################  PASSWORD_VALIDATORS ###########################################
 
 
 # Password validation
@@ -115,34 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Define the user model
-AUTH_USER_MODEL = 'user.User'
-
-
+########################################### REST FRAMEWORK CONFIGURATIONS  ###########################################
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":[
@@ -155,23 +131,26 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES":[
         "rest_framework.permissions.IsAuthenticated"
     ],
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     "DEFAULT_PAGINATION_CLASS":"rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 20,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
-
-
+JWT_SECRET_KEY=config("JWT_SECRET_KEY")
+########################################### SIMPLE JWT CONFIGURATIONS  ###########################################
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ["BEARER"],
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2), # it should last shorter than the access token
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=0.5), # it should last shorter than the access token
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90), # it should be longer than the access token
     'ROTATE_REFRESH_TOKENS': False, # it return both a refresh and access token
     'BLACKLIST_AFTER_ROTATION': False, # this will blacklist it after rotation, so the old refresh token will not be allowed
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': config("JWT_SECRET_KEY"),
+    'SIGNING_KEY': JWT_SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
@@ -194,13 +173,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-CORS_ALLOWED_ORIGINS =[
-   
-"http://localhost:3000",
-"http://127.0.0.1:3000"
-]
 
-
+########################################### SPECTACULAR CONFIGURATIONS  ###########################################
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Logg API',
     'DESCRIPTION': 'Provide security for society',
@@ -212,43 +186,7 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
     # OTHER SETTINGS
 }
-
-# Email settings
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-# EMAIL_USE_TLS = True
-EMAIL_USE_SSL = True
-EMAIL_PORT =  config('EMAIL_HOST_PORT')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
-
-
-PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
-PAYSTACK_PRIVATE_KEY = config('PAYSTACK_PRIVATE_KEY')
-
-FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
-FLUTTERWAVE_PRIVATE_KEY = config('FLUTTERWAVE_PRIVATE_KEY')
-FLUTTERWAVE_SECRET_HASH = config('FLUTTERWAVE_SECRET_HASH')
-
-
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
-STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
-
-SOCIAL_SECRET = config('SOCIAL_SECRET')
-
-# this is what it will use even if one is provided on the server
-# as long as it is passed
-CARD_PAYMENT_SUCCESS_URL = "https://logg.pythonanywhere.com/"
-
-
-# Image setup
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
-SITE_ID=1
-
-# Logging settings
+########################################### LOGGING CONFIGURATIONS  ###########################################
 LOGGING={
     
    "version":1,
@@ -291,3 +229,79 @@ LOGGING={
        }
    },
 }
+
+
+########################################### EMAIL CONFIGURATIONS  ###########################################
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_PORT =  config('EMAIL_HOST_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+########################################### PAYSTACK CONFIGURATIONS  ###########################################
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')
+PAYSTACK_PRIVATE_KEY = config('PAYSTACK_PRIVATE_KEY')
+
+########################################### FLUTTERWAVE CONFIGURATIONS  ###########################################
+FLUTTERWAVE_PUBLIC_KEY = config('FLUTTERWAVE_PUBLIC_KEY')
+FLUTTERWAVE_PRIVATE_KEY = config('FLUTTERWAVE_PRIVATE_KEY')
+FLUTTERWAVE_SECRET_HASH = config('FLUTTERWAVE_SECRET_HASH')
+
+########################################### STRIPE CONFIGURATIONS  ###########################################
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
+
+SOCIAL_SECRET = config('SOCIAL_SECRET')
+
+
+
+
+# Image setup
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
+CORS_ALLOWED_ORIGINS =[
+   
+"http://localhost:3000",
+"http://127.0.0.1:3000"
+]
+
+# this is what it will use even if one is provided on the server
+# as long as it is passed
+CARD_PAYMENT_SUCCESS_URL = "https://logg.pythonanywhere.com/"
+FRONTEND_URL = config('FRONTEND_URL', '127.0.0.1:8000')
+BACKEND_BASE_URL = config('BACKEND_BASE_URL', '127.0.0.1:8000')
+FERNET_KEY = config('FERNET_KEY', 'nairaland.com')
+
+# Internationalization
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+SITE_ID=1
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Define the user model
+AUTH_USER_MODEL = 'user.User'

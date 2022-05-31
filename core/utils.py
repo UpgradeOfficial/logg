@@ -1,9 +1,12 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.contrib.sites.models import Site
 import random
+from cryptography.fernet import Fernet, InvalidToken
 from random import randint
 from datetime import datetime, timedelta
+from rest_framework.exceptions import  ValidationError
 import jwt
 
 
@@ -55,11 +58,11 @@ def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_l
     """
     Send Activation Email To User
     """
-    base_url = input_context.get("host_url", 'Site.objects.get_current().domain')
-
+    base_url =  settings.BACKEND_BASE_URL
+    
     context = {
         "site": "Logg",
-        "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[:-1])),
+        "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[1:-1])),
         **input_context,
     }
 
@@ -77,7 +80,44 @@ def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_l
 
 
 
+class ExpiringActivationTokenGenerator:
+    FERNET_KEY = settings.FERNET_KEY
+    fernet = Fernet(FERNET_KEY)
 
+    DATE_FORMAT = "%Y-%m-%d %H-%M-%S"
+    EXPIRATION_DAYS = 3
+
+    def _get_time(self):
+        """Returns a string with the current UTC time"""
+        return datetime.utcnow().strftime(self.DATE_FORMAT)
+
+    def _parse_time(self, d):
+        """Parses a string produced by _get_time and returns a datetime object"""
+        return datetime.strptime(d, self.DATE_FORMAT)
+
+    def generate_token(self, text):
+        """Generates an encrypted token"""
+        full_text = text + "|" + self._get_time()
+        token = self.fernet.encrypt(bytes(full_text, encoding="utf-8"))
+        return token
+
+    def get_token_value(self, token):
+        """Gets a value from an encrypted token.
+        Returns None if the token is invalid or has expired.
+        """
+        try:
+            value = self.fernet.decrypt(bytes(token, encoding="utf-8")).decode("utf-8")
+            separator_pos = value.rfind("|")
+
+            text = value[:separator_pos]
+            token_time = self._parse_time(value[separator_pos + 1 :])
+
+            if token_time + timedelta(self.EXPIRATION_DAYS) < datetime.utcnow():
+                raise InvalidToken("Token expired.")
+        except InvalidToken:
+            raise ValidationError("Invalid token.")
+
+        return text
 
 
 

@@ -131,3 +131,5 @@ dmypy.json
 # custom add
 staticfiles/
 staticfiles
+.staticfiles/
+staticfiles/*

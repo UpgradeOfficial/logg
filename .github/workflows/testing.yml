@@ -43,5 +43,17 @@ jobs:
           SOCIAL_SECRET: ${{ secrets.SOCIAL_SECRET }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          FERNET_KEY: ${{ secrets.FERNET_KEY }}
+          PYTHONANYWHERE_DB_PASSWORD: ${{ secrets.PYTHONANYWHERE_DB_PASSWORD }}
+          PYTHONANYWHERE_DB_HOST: ${{ secrets.PYTHONANYWHERE_DB_HOST }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          FLUTTERWAVE_SECRET_HASH: ${{ secrets.FLUTTERWAVE_SECRET_HASH }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          BACKEND_BASE_URL: ${{ secrets.BACKEND_BASE_URL }}
+
       run: |
         python manage.py test

@@ -1,19 +1,21 @@
 import os
 from unittest import mock
 from django.core.files import File
+from django.template.loader import render_to_string
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.sites.models import Site
+from django.core import mail
 from core.tests.models_setups import create_class_room, create_school, create_user
-from core.utils import jwt_encode
+from core.utils import ExpiringActivationTokenGenerator, jwt_encode
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from school.models import ClassRoom
 
 from user.models import Administrator, Guardian, School, Staff, Student, Teacher, User
 
 # Create your tests here.
 
-class TestUser(TestCase):
+class TestUserRegistration(TestCase):
 
     def setUp(self):
         #this is needed to hash the password
@@ -31,12 +33,43 @@ class TestUser(TestCase):
         response = self.client.post(url, data=data)
         response_dict = response.json()
         self.assertEqual(response.status_code, 201)
+        student = Student.objects.first()
         # users are school, student, setup user
         self.assertEqual(User.objects.count(),5)
+        self.assertEqual(Student.objects.count(),1)
         self.assertTrue(User.objects.filter(email="i@i.com").exists())
         self.assertTrue('tokens' in response_dict)
         self.assertTrue('access' in response_dict["tokens"])
         self.assertTrue('refresh' in response_dict["tokens"])
+        link = (
+            "/".join(
+                [
+                    settings.FRONTEND_URL,
+                    "api",
+                    "user"
+                    "email-verification",
+                    ExpiringActivationTokenGenerator().generate_token(student.user.email).decode('utf-8')
+                ]
+            )
+        )
+        base_url =  settings.BACKEND_BASE_URL
+        context = {
+        "site": "Logg",
+        "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[1:-1])),
+        "name": student.user.first_name or student.user.email,
+        "link": link   
+        }
+        template_name = "account_verification.html"
+        email_html_body = render_to_string(template_name, context)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Welcome to Logg, please verify your email address")
+        self.assertEqual(mail.outbox[0].from_email, settings.EMAIL_HOST_USER)
+        self.assertEqual(mail.outbox[0].to[0], student.user.email)
+        # with open('index.html', 'w') as f:
+        #     f.write(mail.outbox[0].body)
+        # print(mail.outbox[0].body)
+        # self.assertTrue(ExpiringActivationTokenGenerator().generate_token(student.user.email).decode('utf-8') in mail.outbox[0].body )
+        #self.assertEqual(mail.outbox[0].body, email_html_body)
         #check if password is hashed
         self.assertNotEqual(data['password'], User.objects.first().password)
    
@@ -170,10 +203,41 @@ class TestUser(TestCase):
         self.assertFalse(User.objects.first().check_password(new_password))
 
     def test_email_verification_with_rigth_email(self): 
-        token = jwt_encode({'email':self.user.email})
+        token = ExpiringActivationTokenGenerator().generate_token(self.user.email).decode('utf-8')
         self.assertFalse(User.objects.first().is_verified)
         url = reverse("user:confirm_email", kwargs={'token':token})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.first().is_verified)
+
+class TestUser(TestCase):
+
+    def setUp(self):
+        
+        self.user1 = create_user() 
+        self.user2 = create_user() 
+        self.user3= create_user() 
+        self.user4 = create_user() 
+        self.user = create_user() 
+
+    def test_query_all_user(self): 
+        url = reverse("user:user-list")
+        response = self.client.get(url)
+        response_dict = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response_dict['results']), 5)
+
+    def test_query_user_with_query_string(self): 
+        url = reverse("user:user-list")
+        query_params = {'email': self.user.email}
+        response = self.client.get(url, query_params)
+        response_dict = response.json()
+        # # users are school, student, setup user
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response_dict['results']), 1)
+        self.assertEqual(response_dict['results'][0]['email'], query_params['email'])
+       
+        
+
+    
       

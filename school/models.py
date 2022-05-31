@@ -48,11 +48,7 @@ class Subject(CoreModel):
 
 
 
-class Score(CoreModel):
-    subject = models.ForeignKey('school.Subject', on_delete=models.CASCADE)
-    student = models.ForeignKey('user.Student', on_delete=models.CASCADE)
-    score = models.DecimalField(decimal_places=2, max_digits=30)
-    total_score = models.DecimalField(decimal_places=2, max_digits=30)
+
 
 class ClassRoomAttendance(CoreModel):
     students = models.ManyToManyField('user.student')
@@ -73,12 +69,46 @@ class Question(CoreModel):
     )
     answer = models.CharField(max_length=50)
 
-class QuestionAnswer(CoreModel):
-    question = models.ForeignKey("school.Question", on_delete=models.SET_NULL, null=True, blank=True)
-    index = models.CharField(max_length=50)
-    text = models.TextField()
+class Announcement(CoreModel):
+    school = models.ForeignKey("user.School", on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.ForeignKey("school.ClassRoom", on_delete=models.SET_NULL, null=True, blank=True)
+    
 
-class StudentAnswer(CoreModel):
-    Qanswer = models.ForeignKey("school.QuestionAnswer", on_delete=models.SET_NULL, null=True, blank=True)
-    index = models.CharField(max_length=50)
-    text = models.TextField()
+class Appointment(CoreModel):
+    """
+    Appointment model
+    """
+    class AppointmentStatus(models.TextChoices):
+        BOOKED = "BOOKED", _("BOOKED")
+        CANCELED = "CANCELLED", _("CANCELLED")
+        CONFIRMED = "CONFIRM", _("CONFIRM")
+        IN_PROGRESS = "IN_PROGRESS", _("IN_PROGRESS")
+        COMPLETED = "COMPLETED", _("COMPLETED")
+        
+    initiator = models.ForeignKey(
+        "user.User", on_delete=models.CASCADE, related_name="initiator_appointment"
+    )
+    invitee = models.ForeignKey(
+        "user.User", on_delete=models.CASCADE, related_name="invitee_appointment"
+    )
+    description = models.TextField()
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField(null=True, blank=True)
+    location = models.CharField(max_length=250, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=AppointmentStatus.choices, default=AppointmentStatus.BOOKED)
+    next_mail_schedule = models.DateField(null=True, blank=True)
+# class Score(CoreModel):
+#     subject = models.ForeignKey('school.Subject', on_delete=models.CASCADE)
+#     student = models.ForeignKey('user.Student', on_delete=models.CASCADE)
+#     score = models.DecimalField(decimal_places=2, max_digits=30)
+#     total_score = models.DecimalField(decimal_places=2, max_digits=30)
+# class QuestionAnswer(CoreModel):
+#     question = models.ForeignKey("school.Question", on_delete=models.SET_NULL, null=True, blank=True)
+#     index = models.CharField(max_length=50)
+#     text = models.TextField()
+
+# class StudentAnswer(CoreModel):
+#     Qanswer = models.ForeignKey("school.QuestionAnswer", on_delete=models.SET_NULL, null=True, blank=True)
+#     index = models.CharField(max_length=50)
+#     text = models.TextField()

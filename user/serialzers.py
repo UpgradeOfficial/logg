@@ -1,3 +1,4 @@
+
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -54,14 +55,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         elif validated_data.get('user_type') == User.USER_TYPE.TEACHER:
             school = get_object_or_404(School, id=school_id)
             Teacher.objects.create(user=user, school=school)
-        
-        context = {
-            'name':user.first_name or "Guest",
-            'link': "https://nairaland.com/",
-            'site': "Logg",
-            'MEDIA_URL': 'media/'
-        }
-        send_mail(subject="Welcome To Logg", to_email=user.email, input_context=context, template_name='account_verification.html', cc_list=[], bcc_list=[])
+        user.send_email_verification_mail()
+        # link = '/'.join([settings.FRONTEND_URL,])
+        # context = {
+        #     'name':user.first_name or user.email,
+        #     'link': "https://nairaland.com/",
+        #     'site': "Logg",
+        #     'MEDIA_URL': 'media/',
+        #     'verification_url':""
+        # }
+        # send_mail(subject="Welcome To Logg", to_email=user.email, input_context=context, template_name='account_verification.html', cc_list=[], bcc_list=[])
         return user
         
 

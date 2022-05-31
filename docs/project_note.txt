@@ -21,3 +21,8 @@
 	a setup config file (setup.cfg) to exclude some files/folders (command to run the settigs (10) in commands.txt file)
 12. Setup github actions to automate testing 
 get a single branch (command to run the settigs (10) in commands.txt file)
+13. I had to delete all my migration file to make it simple. then I ran makemigrations it didnt work, until I ran delete the migrations and ran the 
+	makemigrations for each app and did migrate and it works as normal
+
+14. my github action where not working cause any change in the environmental variable file has to be updatad
+	in the workflow file and also in the github secret tabs(!important)

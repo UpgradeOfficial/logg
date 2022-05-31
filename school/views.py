@@ -3,7 +3,7 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView
 from school.models import ClassRoom, Expense
 from user.models import School, User
-from .serializers import ClassRoomAttendanceModelSerializer, ClassRoomModelSerializer, ExpenseModelSerializer, FeeModelSerializer, SchoolModelSerializer, SubjectModelSerializer, TermModelSerializer
+from .serializers import AnnouncementModelSerializer, AppointmentModelSerializer, ClassRoomAttendanceModelSerializer, ClassRoomModelSerializer, ExpenseModelSerializer, FeeModelSerializer, SchoolModelSerializer, SubjectModelSerializer, TermModelSerializer
 from user import permissions as UserPermission
 # Create your views here.
 
@@ -25,6 +25,7 @@ class ClassRoomListAPIView(ListAPIView):
 class ClassRoomCreateAPIView(ListCreateAPIView):
     serializer_class = ClassRoomModelSerializer
     permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]
+    
 
     def get_queryset(self):
         classrooms =ClassRoom.objects.filter(school__user =self.request.user)
@@ -53,4 +54,12 @@ class SubjectCreateAPIView(CreateAPIView):
     
 class TermCreateAPIView(CreateAPIView):
     serializer_class = TermModelSerializer
+    permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]
+
+class AnnouncementCreateAPIView(CreateAPIView):
+    serializer_class = AnnouncementModelSerializer
+    permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]
+
+class AppointmentCreateAPIView(CreateAPIView):
+    serializer_class = AppointmentModelSerializer
     permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]

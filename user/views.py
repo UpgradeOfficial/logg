@@ -9,7 +9,8 @@ from core.utils import jwt_decode, jwt_encode
 import logging
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serialzers import MyTokenObtainPairSerializer
-
+from core.utils import ExpiringActivationTokenGenerator
+from .filters import UserFilter
 from .models import User
 from .serialzers import (ForgotPasswordSerializer,
                         ChangePasswordSerializer, 
@@ -34,6 +35,8 @@ class InitiatePasswordResetView(APIView):
             return Response(status=status.HTTP_200_OK, data={"message": "email sent"})
         
         return Response(status=status.HTTP_400_BAD_REQUEST , data={"message": "user not found"})
+
+
 
 class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
@@ -86,8 +89,8 @@ class ConfirmEmailView(APIView):
 
     def get(self, request, token, *args, **kwargs):
         
-        decoded_data = jwt_decode(token)
-        email = decoded_data['email']
+        decoded_data =  ExpiringActivationTokenGenerator().get_token_value(token)
+        email = decoded_data
         user = get_object_or_404(User, email=email)
         user.is_verified =True
         user.save()
@@ -103,7 +106,7 @@ class UserListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserProfileSerializer
     queryset = User.objects.all()
-    lookup_field = "id"
+    filterset_class = UserFilter
 
 
 

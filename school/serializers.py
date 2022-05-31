@@ -1,8 +1,9 @@
 from asyncio.log import logger
+from click import secho
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from .models import ClassRoom, ClassRoomAttendance, Expense, Fee, Subject, Term
-from user.models import  School
+from .models import Announcement, Appointment, ClassRoom, ClassRoomAttendance, Expense, Fee, Subject, Term
+from user.models import  School, User
 from user.serialzers import UserProfileSerializer
 
 class SchoolModelSerializer(serializers.ModelSerializer):
@@ -40,6 +41,29 @@ class TermModelSerializer(serializers.ModelSerializer):
 class SubjectModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
+        fields = '__all__'
+
+class AppointmentModelSerializer(serializers.ModelSerializer):
+    #invitee = serializers.UUIDField()
+    class Meta:
+        model = Appointment
+        fields = '__all__'
+        extra_kwargs = {'initiator': {'read_only': True}, }
+
+
+    def create(self, validated_data):
+        
+        invitee_id = validated_data.pop('invitee')
+        initiator = self.context['request'].user
+        invitee = get_object_or_404(User, email=invitee_id)
+        appointment = Appointment.objects.create(invitee=invitee, initiator=initiator, **validated_data )
+        return appointment
+
+
+class AnnouncementModelSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Announcement
         fields = '__all__'
 
 
