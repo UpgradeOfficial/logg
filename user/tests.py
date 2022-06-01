@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.sites.models import Site
 from django.core import mail
-from core.tests.models_setups import create_class_room, create_school, create_user
+from core.tests.models_setups import create_test_class_room, create_test_school, create_test_user
 from core.utils import ExpiringActivationTokenGenerator, jwt_encode
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
@@ -21,10 +21,10 @@ class TestUserRegistration(TestCase):
         #this is needed to hash the password
         #create user will not hash the password
         # self.user = User.objects.create_user(email="odeyemiincrease@yahoo.c", password='password')
-        self.user = create_user() # 1 user
+        self.user = create_test_user() # 1 user
 
     def test_student_registration_right_information(self):
-        classroom = create_class_room() # create a teacher, teacher also create school , and a school 3 user 
+        classroom = create_test_class_room() # create a teacher, teacher also create school , and a school 3 user 
         school = classroom.school
         image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
         image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')
@@ -98,7 +98,7 @@ class TestUserRegistration(TestCase):
 
     def test_teacher_registration_right_information(self):
         data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
-        school = create_school()
+        school = create_test_school()
         image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
         data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"TEACHER", "school":school.id}
@@ -111,7 +111,7 @@ class TestUserRegistration(TestCase):
 
     def test_administrator_registration_right_information(self):
         data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
-        school = create_school()
+        school = create_test_school()
         image = SimpleUploadedFile("media/file.default.png", data.read(),content_type='multipart/form-data')
         url = reverse("user:register")
         data= {"email":"i@i.com", "password": "new_password", 'image':image, 'user_type':"ADMINISTRATOR", "school":school.id}
@@ -214,11 +214,11 @@ class TestUser(TestCase):
 
     def setUp(self):
         
-        self.user1 = create_user() 
-        self.user2 = create_user() 
-        self.user3= create_user() 
-        self.user4 = create_user() 
-        self.user = create_user() 
+        self.user1 = create_test_user() 
+        self.user2 = create_test_user() 
+        self.user3= create_test_user() 
+        self.user4 = create_test_user() 
+        self.user = create_test_user() 
 
     def test_query_all_user(self): 
         url = reverse("user:user-list")
@@ -236,6 +236,25 @@ class TestUser(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response_dict['results']), 1)
         self.assertEqual(response_dict['results'][0]['email'], query_params['email'])
+
+
+class UploadStudentData(TestCase):
+    def test_get_student_data_csv(self):
+        url = reverse("user:upload-student-data")
+        print(url)
+        response = self.client.get(url)
+        response_dict = response.json()
+        print(response_dict)
+        self.assertEqual(response.status_code, 200)
+
+    # def test_post_student_data_csv(self):
+    #     url = reverse("user:upload-student-data")
+    #     print(url)
+    #     response = self.client.post(url, content_type="'multipart/form-data'")
+    #     response_dict = response.json()
+    #     print(response_dict)
+    #     self.assertEqual(response.status_code, 200)
+        
        
         
 

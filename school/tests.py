@@ -5,7 +5,7 @@ from django.urls  import reverse
 from django.test import TestCase
 from unittest import mock
 
-from core.tests.models_setups import create_class_room, create_class_teacher, create_school, create_student, create_teacher, create_term, create_user
+from core.tests.models_setups import create_test_class_room, create_test_class_teacher, create_test_school, create_test_student, create_test_teacher, create_test_term, create_test_user
 from school.models import Announcement, Appointment, ClassRoom, ClassRoomAttendance, Expense, Fee, Subject, Term
 from user.models import Student
 logger = logging.getLogger("debug")
@@ -19,8 +19,8 @@ logger = logging.getLogger("debug")
 class TestSchool(TestCase):
 
     def setUp(self):
-        self.school1 = create_school()
-        self.school2 = create_school()
+        self.school1 = create_test_school()
+        self.school2 = create_test_school()
         
 
     def test_school_list_view(self):
@@ -32,18 +32,18 @@ class TestSchool(TestCase):
     # NOt tested
     def test_school_classroom_list_view(self):
         url = reverse("school:list_school_classroom", kwargs={'pk':self.school1.id})
-        classroom1 = create_class_room(school=self.school1)
-        classroom2 = create_class_room(school=self.school1)
-        classroom3 = create_class_room(school=self.school1)
+        classroom1 = create_test_class_room(school=self.school1)
+        classroom2 = create_test_class_room(school=self.school1)
+        classroom3 = create_test_class_room(school=self.school1)
         res = self.client.get(url)
         res_json = res.json()
         self.assertEqual(len(res_json['results']), 3)
 
     def test_school_classroom_list_view(self):
         url = reverse("school:list_school_classroom", kwargs={'pk':self.school1.id})
-        classroom1 = create_class_room(school=self.school1)
-        classroom2 = create_class_room(school=self.school1)
-        classroom3 = create_class_room(school=self.school1)
+        classroom1 = create_test_class_room(school=self.school1)
+        classroom2 = create_test_class_room(school=self.school1)
+        classroom3 = create_test_class_room(school=self.school1)
         res = self.client.get(url)
         self.assertEqual(res.status_code, 200)
         res_json = res.json()
@@ -53,12 +53,12 @@ class TestSchool(TestCase):
 class TestClassRoom(TestCase):
 
     def setUp(self):
-        self.user = create_user()
-        self.school1 = create_school()
-        self.school2 = create_school()
+        self.user = create_test_user()
+        self.school1 = create_test_school()
+        self.school2 = create_test_school()
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
-    def test_create_classroom(self, authenticate_function):
+    def test_create_test_classroom(self, authenticate_function):
         authenticate_function.return_value = self.school1.user, None
         url = reverse("school:create_classroom")
         data = {
@@ -75,10 +75,10 @@ class TestClassRoom(TestCase):
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_get_classroom(self, authenticate_function):
         authenticate_function.return_value = self.school1.user, None
-        classroom1 = create_class_room(name="Primary 1", school=self.school1, teacher = "leave")
-        classroom2 = create_class_room(name="Primary 2", school=self.school1, teacher = "leave")
-        classroom3 = create_class_room(name="Primary 3", school=self.school1, teacher = "leave")
-        classroom4 = create_class_room(name="Primary 3", school=self.school2, teacher = "leave")
+        classroom1 = create_test_class_room(name="Primary 1", school=self.school1, teacher = "leave")
+        classroom2 = create_test_class_room(name="Primary 2", school=self.school1, teacher = "leave")
+        classroom3 = create_test_class_room(name="Primary 3", school=self.school1, teacher = "leave")
+        classroom4 = create_test_class_room(name="Primary 3", school=self.school2, teacher = "leave")
         url = reverse("school:create_classroom")
         res = self.client.get(url)
         res_json = res.json()
@@ -94,7 +94,7 @@ class TestTerm(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_term(self, authenticate_function):
-        school1 = create_school()
+        school1 = create_test_school()
         authenticate_function.return_value = school1.user, None
         url = reverse("school:create_term")
         data = {
@@ -115,8 +115,8 @@ class TestExpense(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_expense(self, authenticate_function):
-        school1 = create_school()
-        term = create_term(school=school1)
+        school1 = create_test_school()
+        term = create_test_term(school=school1)
         authenticate_function.return_value = school1.user, None
         url = reverse("school:create_expense")
         data = {
@@ -136,13 +136,13 @@ class TestClassRoomAttendance(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_classroomattendance(self, authenticate_function):
-        classroom_teacher = create_teacher()
-        classroom = create_class_room(teacher=classroom_teacher)
-        Student1 = create_student()
-        Student2 = create_student()
-        Student3 = create_student()
-        Student4 = create_student()
-        Student5 = create_student()
+        classroom_teacher = create_test_teacher()
+        classroom = create_test_class_room(teacher=classroom_teacher)
+        Student1 = create_test_student()
+        Student2 = create_test_student()
+        Student3 = create_test_student()
+        Student4 = create_test_student()
+        Student5 = create_test_student()
         authenticate_function.return_value =classroom_teacher.user, None
 
         url = reverse("school:create_classroom_attendance")
@@ -165,9 +165,9 @@ class TestSubject(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_subject(self, authenticate_function):
-        self.school1 = create_school()
+        self.school1 = create_test_school()
         authenticate_function.return_value = self.school1.user, None
-        classroom = create_class_room(school=self.school1)
+        classroom = create_test_class_room(school=self.school1)
         url = reverse("school:create_subject")
         data = {
             "classroom": classroom,
@@ -183,8 +183,8 @@ class TestFee(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_fee(self, authenticate_function):
-        school1 = create_school()
-        term = create_term(school=school1)
+        school1 = create_test_school()
+        term = create_test_term(school=school1)
         authenticate_function.return_value = school1.user, None
         url = reverse("school:create_fee")
         data = {
@@ -205,8 +205,8 @@ class TestAppointment(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_appointment(self, authenticate_function):
-        school = create_school()
-        invitee = create_user()
+        school = create_test_school()
+        invitee = create_test_user()
         authenticate_function.return_value = school.user, None
         url = reverse("school:create_appointment")
         data = {
@@ -232,8 +232,8 @@ class TestAnnouncement(TestCase):
         
     @mock.patch('core.authentication.TokenAuthentication.authenticate')
     def test_create_Announcement(self, authenticate_function):
-        school1 = create_school()
-        term = create_term(school=school1)
+        school1 = create_test_school()
+        term = create_test_term(school=school1)
         authenticate_function.return_value = school1.user, None
         url = reverse("school:create_announcement")
         data = {

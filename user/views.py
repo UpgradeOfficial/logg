@@ -1,22 +1,29 @@
-
+import codecs
+import csv
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import generics, parsers
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework import status
 from core.utils import jwt_decode, jwt_encode
 import logging
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serialzers import MyTokenObtainPairSerializer
+
+from user.utils import create_student_user, download_csv
+from .serialzers import MyTokenObtainPairSerializer, StudentSerializer
 from core.utils import ExpiringActivationTokenGenerator
 from .filters import UserFilter
-from .models import User
+from .models import Student, User
 from .serialzers import (ForgotPasswordSerializer,
                         ChangePasswordSerializer, 
                         ResetPasswordSerializer, 
                         UserProfileSerializer, 
                         UserRegistrationSerializer)
+
+from .permissions import SchoolPermission
 
 logger = logging.getLogger('main')
 
@@ -116,3 +123,36 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
     
     
+class UploadStudentView(generics.ListCreateAPIView):
+    print('yes')
+    permission_classes = [AllowAny, ]
+    serializer_class = StudentSerializer
+
+    def get(self, request, *args, **kwargs):
+        print('enteres')
+        data = download_csv(Student.objects.all())
+        return HttpResponse (data, content_type='text/csv')
+
+    def post(self, request, *args, **kwargs):
+        file = request.FILES['file']
+        reader = csv.DictReader(codecs.iterdecode(file, 'utf-8'), delimiter=',')
+        data = list(reader)
+        serializer = self.serializer_class(data=data, many=True)
+        serializer.is_valid(raise_exception=True)
+
+        student_list =[]
+        for row in serializer.data:
+            user = create_student_user(row['first_name'], row['last_name'])
+            student_list.append(
+            Student(user=user)
+            )
+
+        Student.objects.bulk_create(student_list)
+        return Response(status=status.HTTP_201_CREATED, data={"message":"Controlled Substances Uploaded Successfully"})
+
+
+# @api_view
+# def UploadStudentView(request):
+#     print('yes')
+#     data = download_csv(Student.objects.all())
+#     return HttpResponse (data, content_type='text/csv')

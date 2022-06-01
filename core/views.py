@@ -2,7 +2,7 @@
 # Create your views here.
 import json
 import os
-from re import sub
+from django.shortcuts import render
 from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.response import Response
@@ -83,10 +83,19 @@ class PhoneCode(APIView):
         return Response({"status_code": 200, "message": "Success.", "result": data})
 
 class ContactUsView(APIView):
+    '''
+    THIS API IS USED TO SEND MESSAGE TO THE ADMIN AND IS
+    ACCESSIBLE BY ANY ONE
+    '''
     serializer_class = ContactUsSerializer()
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
+        '''
+        THIS API IS USED TO SEND MESSAGE TO THE ADMIN AND IS
+        ACCESSIBLE BY ANY ONE. IT ACCESS VIA POST REQUEST AND THE EMAIL OF
+        THE SENDER IS COLLECT FOR FEEDBACK PURPOSES
+        '''
         serializer = ContactUsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         subject = serializer.validated_data['subject']
@@ -95,9 +104,10 @@ class ContactUsView(APIView):
         name = serializer.validated_data['name']      
         context = {
             'name':name,
-            'text':text
+            'text':text,
+            'email': email
         }
-        send_mail(subject=subject, to_email=email, input_context=context, template_name='contact_us.html', cc_list=[], bcc_list=[])
+        send_mail(subject=subject, to_email=settings.BACKEND_ADMIN_EMAIL, input_context=context, template_name='contact_us.html', cc_list=[], bcc_list=[])
         return Response(status=status.HTTP_200_OK, data={'message':"You message has been received and is been processed."})
 
 

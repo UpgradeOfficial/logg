@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, ListCreateAPIView
-from school.models import ClassRoom, Expense
-from user.models import School, User
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView
+from school.models import ClassRoom
+from user.models import School, Student
 from .serializers import AnnouncementModelSerializer, AppointmentModelSerializer, ClassRoomAttendanceModelSerializer, ClassRoomModelSerializer, ExpenseModelSerializer, FeeModelSerializer, SchoolModelSerializer, SubjectModelSerializer, TermModelSerializer
 from user import permissions as UserPermission
 # Create your views here.
@@ -63,3 +63,8 @@ class AnnouncementCreateAPIView(CreateAPIView):
 class AppointmentCreateAPIView(CreateAPIView):
     serializer_class = AppointmentModelSerializer
     permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]
+
+
+
+
+

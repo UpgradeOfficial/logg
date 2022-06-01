@@ -108,3 +108,8 @@ class ResetPasswordSerializer(serializers.Serializer):
     This is used to serializer the password field 
     """
     password = serializers.CharField()
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = "__all__" #('first_name','last_name')
