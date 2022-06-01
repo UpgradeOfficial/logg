@@ -14,6 +14,6 @@ urlpatterns = [
     path("confirm_email/<token>/", views.ConfirmEmailView.as_view(), name="confirm_email"),
     path("<id>/", views.UserRetrieveView.as_view(), name="user-profile"),
     path("", views.UserListView.as_view(), name="user-list"),
-    path("upload-student-data/", views.UploadStudentView, name="upload-student-data"),
+    path("upload-student-data/", views.UploadStudentView.as_view(), name="upload-student-data"),
 
 ]
