@@ -53,6 +53,7 @@ jobs:
           FLUTTERWAVE_SECRET_HASH: ${{ secrets.FLUTTERWAVE_SECRET_HASH }}
           FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
           BACKEND_BASE_URL: ${{ secrets.BACKEND_BASE_URL }}
+          BACKEND_ADMIN_EMAIL: ${{ secrets.BACKEND_ADMIN_EMAIL }}
 
       run: |
         python manage.py test
