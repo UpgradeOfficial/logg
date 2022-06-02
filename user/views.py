@@ -32,6 +32,10 @@ class InitiatePasswordResetView(APIView):
     serializer_class = ForgotPasswordSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        return Student.objects.all()
+    
+
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         user = User.objects.filter(email=email)
@@ -123,18 +127,17 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
     
     
-class UploadStudentView(generics.ListCreateAPIView):
-    print('yes')
-    permission_classes = [AllowAny, ]
+class UploadStudentView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = StudentSerializer
 
     def get(self, request, *args, **kwargs):
-        print('enteres')
         data = download_csv(Student.objects.all())
         return HttpResponse (data, content_type='text/csv')
 
     def post(self, request, *args, **kwargs):
         file = request.FILES['file']
+        
         reader = csv.DictReader(codecs.iterdecode(file, 'utf-8'), delimiter=',')
         data = list(reader)
         serializer = self.serializer_class(data=data, many=True)
@@ -148,11 +151,7 @@ class UploadStudentView(generics.ListCreateAPIView):
             )
 
         Student.objects.bulk_create(student_list)
-        return Response(status=status.HTTP_201_CREATED, data={"message":"Controlled Substances Uploaded Successfully"})
+        return Response(status=status.HTTP_201_CREATED, data={"message":"Student Data Uploaded Successfully"})
 
 
-# @api_view
-# def UploadStudentView(request):
-#     print('yes')
-#     data = download_csv(Student.objects.all())
-#     return HttpResponse (data, content_type='text/csv')
+

@@ -9,7 +9,7 @@ def download_csv(queryset):
     model = queryset.model
     response = HttpResponse(content_type='text/csv')
     # force download.
-    response['Content-Disposition'] = 'attachment;filename=export.csv'
+    response['Content-Disposition'] = 'attachment;filename=student_data.csv'
     # the csv writer
     writer = csv.writer(response)
     field_names = [field.name for field in opts.fields]
@@ -25,5 +25,5 @@ def create_student_user(first_name: str, last_name: str):
     last_name = last_name.lower()
     email = f'{first_name}_{last_name}@logg_student.com' 
     password = f'{first_name}_{last_name}'
-    user= User.objects.create_user(first_name=first_name, last_name=last_name, email=email, password=password)
+    user= User.objects.create_user(first_name=first_name, last_name=last_name, email=email, is_verified=True, password=password)
     return user

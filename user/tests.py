@@ -241,19 +241,33 @@ class TestUser(TestCase):
 class UploadStudentData(TestCase):
     def test_get_student_data_csv(self):
         url = reverse("user:upload-student-data")
-        print(url)
         response = self.client.get(url)
-        response_dict = response.json()
-        print(response_dict)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'text/csv')
 
-    # def test_post_student_data_csv(self):
-    #     url = reverse("user:upload-student-data")
-    #     print(url)
-    #     response = self.client.post(url, content_type="'multipart/form-data'")
-    #     response_dict = response.json()
-    #     print(response_dict)
-    #     self.assertEqual(response.status_code, 200)
+    def test_post_student_data_csv(self):
+        url = reverse("user:upload-student-data")
+        path_to_student_csv_file = os.path.join(settings.BASE_DIR, 'templates', 'test','student-upload.csv')
+        data = open(path_to_student_csv_file, "rb")
+        data = SimpleUploadedFile(
+                content=data.read(), name=data.name, content_type="multipart/form-data"
+            )
+
+        # image_data = File(open(os.path.join(settings.BASE_DIR,'media','default.png'), 'rb'))
+        # image = SimpleUploadedFile("media/file.default.png", image_data.read(),content_type='multipart/form-data')
+        data  ={'file':data}
+            # Perform put request (Act)
+        response = self.client.post(url, data=data)
+        response_dict = response.json()
+        student = Student.objects.first()
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response_dict['message'], "Student Data Uploaded Successfully")
+        self.assertEqual(Student.objects.count(), 1)
+        self.assertEqual(student.user.first_name, 'increase')
+        self.assertEqual(student.user.last_name, 'odeyemi')
+        self.assertEqual(student.user.email, f'increase_odeyemi@logg_student.com')
+        self.assertTrue(User.objects.first().check_password('increase_odeyemi'))
+        self.assertTrue(student.user.is_verified)
         
        
         
