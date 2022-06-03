@@ -54,6 +54,7 @@ jobs:
           FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
           BACKEND_BASE_URL: ${{ secrets.BACKEND_BASE_URL }}
           BACKEND_ADMIN_EMAIL: ${{ secrets.BACKEND_ADMIN_EMAIL }}
+          ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
 
       run: |
         python manage.py test
