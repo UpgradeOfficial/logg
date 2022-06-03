@@ -60,5 +60,5 @@ ROOT_URLCONF = 'logg.urls'
 #     'debug_toolbar.panels.profiling.ProfilingPanel',
 # ]
 
-import django_heroku
-django_heroku.settings(locals())
+# import django_heroku
+# django_heroku.settings(locals())
