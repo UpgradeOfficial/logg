@@ -10,7 +10,11 @@
 10. flake8
 11. pip freeze > requirements.txt
 12. git clone -b <branchname> --single-branch <remote-repo-url>
+13. heroku run <command> -a <app_name> e.g heroku run bash -a logg-by-alpha
+
 release: python manage.py makemigrations --noinput 
 release: python manage.py collectstatic --noinput 
-release: python manage.py migrate --noinput 
+release: python manage.py migrate --noinput
+
+ 
 

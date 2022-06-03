@@ -28,3 +28,15 @@ get a single branch (command to run the settigs (10) in commands.txt file)
 	in the workflow file and also in the github secret tabs(!important)
 
 15. Without the static files been set the drf spectacular wont work
+
+16. Deploy with Heroku
+	i. create an Heroku account
+	ii. Create a new app
+	iii. add a runtime.txt file which contains your python version in your project
+	iv. add a Procfile
+	v. add a requirements.txt
+	vi connect your app to github in the deploy section
+	vii. If your are using a multi-settings file, add "DJANGO_SETTINGS_MODULE" which points to your settings file of choice 
+			and also other env variables
+	viii Deploy with the button in the deploy tab in heroku
+	ix. You can access a particular app by (command to run the settigs (13) in commands.txt file)
