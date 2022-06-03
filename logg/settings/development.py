@@ -32,6 +32,8 @@ DATABASES = {
     }
 }
 
+
+ROOT_URLCONF = 'logg.urls'
 # INTERNAL_IPS = [
 
 #     "127.0.0.1",
@@ -57,3 +59,6 @@ DATABASES = {
 #     'debug_toolbar.panels.redirects.RedirectsPanel',
 #     'debug_toolbar.panels.profiling.ProfilingPanel',
 # ]
+
+import django_heroku
+django_heroku.settings(locals())

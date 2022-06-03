@@ -26,3 +26,5 @@ get a single branch (command to run the settigs (10) in commands.txt file)
 
 14. my github action where not working cause any change in the environmental variable file has to be updatad
 	in the workflow file and also in the github secret tabs(!important)
+
+15. Without the static files been set the drf spectacular wont work

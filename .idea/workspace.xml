@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="649f5318-b637-478b-96d5-66899ccb7cd6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/core/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logg/settings/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/logg/settings/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logg/settings/development.py" beforeDir="false" afterPath="$PROJECT_DIR$/logg/settings/development.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logg/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/logg/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/serialzers.py" beforeDir="false" afterPath="$PROJECT_DIR$/user/serialzers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/user/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/project_note.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/project_note.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,5 +31,16 @@
       <updated>1653488601071</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
