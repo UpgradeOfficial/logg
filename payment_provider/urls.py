@@ -15,9 +15,13 @@ urlpatterns = [
     views.BankCodeNameView.as_view(), 
     name='bank-codes'),
 
-    path('verify-bank-account/<str:provider>/<int:bank_code>/<account_number>/', 
+    path('verify-bank-account/', 
     views.VerifyBankAccountView.as_view(), 
     name='verify-bank-account'),
+
+    path('create-subaccount/', 
+    views.CreateSubAccountView.as_view(), 
+    name='create-subaccount'),
 
     path('paystack-webhook/', 
     views.PaystackWebhookView.as_view(), 

@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 from core.utils import random_with_N_digits
 from .gateway import Gateway, GatewayException
+from rest_framework.exceptions import ValidationError
 
 PAYSTACK_BASE_URL = "https://api.paystack.co/"
 
@@ -20,11 +21,12 @@ class PaystackProvider(Gateway):
             "Content-Type": "application/json"
         }
         response = requests.request(method, PAYSTACK_BASE_URL + path, json=payload, params=params, headers=headers)
-        if response.status_code != 200:
-            raise Exception()
         response_dict = response.json()
+        if response.status_code != 200:
+            raise ValidationError(response_dict.get('message') or 'Something went wrong. Try again or contact admin')
+        
         if response_dict['status'] != True:
-            raise Exception()
+            raise ValidationError(response_dict.get('message') or 'Something went wrong. Try again or contact admin')
         return response_dict
 
     def pay_amount(self, amount, email):
@@ -76,17 +78,7 @@ class PaystackProvider(Gateway):
 
         return webhook_data
         
-    def create_split_account(self, school_name, account_number,  settlement_bank):
-        url = "subaccount/" #f"transactions/{payment_ref}/verify/"
-        data = { 
-            "business_name": school_name,
-            "settlement_bank": settlement_bank,
-            "account_number": account_number,
-            "percentage_charge": Settings.PERCENTAGE_CHARGE
-        }
-        response = self.request(method="POST", path=url, payload=data)
-        response_dict = response['data']
-        return response_dict
+    
 
     def get_all_banks(self, name_of_bank=None):
         url = "bank/" 
@@ -98,10 +90,56 @@ class PaystackProvider(Gateway):
         return  response_dict
 
     def resolve_bank_account(self, bank_code, account_number):
-        url = f"bank/resolve?account_number={account_number}&bank_code={bank_code}" 
-        response = self.request(method="GET", path=url)
+        url = f"bank/resolve/"#?account_number={account_number}&bank_code={bank_code}" 
+        params={
+               "account_number":account_number,
+               "bank_code":bank_code
+        }
+        response = self.request(method="GET", path=url, params=params)
         if response["status"] == True and response["message"] == "Account number resolved":
             response_dict = response['data']
         else:
             response_dict = {"message": "data not verified"}
         return response_dict
+
+    def create_split_account(self, bank_code, account_number):
+        print('yes')
+        account = self.resolve_bank_account(bank_code=bank_code, account_number=account_number)
+        print(account)
+        url = "subaccount/" 
+        print(settings.PERCENTAGE_CHARGE)
+        data = { 
+            "business_name": account.get('account_name'),
+            "bank_code":  bank_code,
+            "account_number": account.get("account_number"),
+            "percentage_charge": settings.PERCENTAGE_CHARGE
+        }
+        response = self.request(method="POST", path=url, payload=data)
+
+        print(response)
+
+        #response_dict = response.json()
+        #print(response_dict)
+        return response
+
+
+    # def resolve_bank_account_details(self, bank_code, account_number, account_name, account_type):
+    #     url = f"bank/validate/"#?account_number={account_number}&bank_code={bank_code}" 
+    #     print(url)
+    #     data={ 
+    #         "bank_code": "632005",
+    #         "country_code": "ZA",
+    #         "account_number": "0123456789",
+    #         "account_name": "Ann Bron",
+    #         "account_type": "personal",# [ personal, business ]
+    #         "document_type": "identityNumber",#[ "identityNumber","passportNumber", "businessRegistrationNumber" ]
+    #         "document_number": "1234567890123"
+    #     }
+    #     response = self.request(method="POST", path=url, data=data)
+    #     if response["status"] == True and response["message"] == "Account number resolved":
+    #         response_dict = response['data']
+    #     else:
+    #         response_dict = {"message": "data not verified"}
+    #     return response_dict
+
+  

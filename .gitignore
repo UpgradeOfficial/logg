@@ -133,3 +133,8 @@ staticfiles/
 staticfiles
 .staticfiles/
 staticfiles/*
+
+media/users/
+/media/users/
+media/users/*
+/media/users/

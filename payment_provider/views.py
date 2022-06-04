@@ -55,16 +55,31 @@ class BankCodeNameView(APIView):
         provider = Gateway().get_payment_gateway(provider=provider_query_string)
         data=provider.get_all_banks()
         return Response(status=status.HTTP_200_OK, data=data)
+
 class VerifyBankAccountView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self,  provider, bank_code, account_number, *args, **kwargs):
+    def post(self,  *args, **kwargs):
+        data = self.request.data
+        provider = data['provider']
+        bank_code = data['bank_code']
+        account_number = data['account_number']
         provider = Gateway().get_payment_gateway(provider=provider)
-        print(provider)
         data=provider.resolve_bank_account(bank_code=bank_code, account_number=account_number)
-        print(data)
         return Response(status=status.HTTP_200_OK, data=data)
 
+class CreateSubAccountView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self,  *args, **kwargs):
+        data = self.request.data
+        provider = data['provider']
+        bank_code = data['bank_code']
+        account_number = data['account_number']
+        provider = Gateway().get_payment_gateway(provider=provider)
+        data=provider.create_split_account(bank_code=bank_code, account_number=account_number)
+        print(data)
+        return Response(status=status.HTTP_200_OK, data=data)
 
 
 

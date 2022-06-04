@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.test import RequestFactory, Client, TestCase
 from rest_framework.test import APIClient
 from unittest import mock
+from payment_provider.models import PaymantProvider
 
 from payment_provider.paystack import PaystackProvider
 from ..views import PaystackWebhookView
@@ -254,6 +255,38 @@ paystack_list_bank_success_data = {
       "perPage": 5
   }
 }
+
+paystack_create_split_account_success_data={
+  "status": True,
+  "message": "Subaccount created",
+  "data": {
+    "business_name": "Cheese Sticks",
+    "account_number": "0123456789",
+    "percentage_charge": 0.2,
+    "settlement_bank": "Guaranty Trust Bank",
+    "integration": 428626,
+    "domain": "test",
+    "subaccount_code": "ACCT_xxxxxxxxxxxxx",
+    "is_verified": False,
+    "settlement_schedule": "AUTO",
+    "active": True,
+    "migrate": False,
+    "id": 37614,
+    "createdAt": "2020-05-19T11:54:20.655Z",
+    "updatedAt": "2020-05-19T11:54:20.655Z"
+  }
+}
+
+paystack_resolve_bank_success_data={
+  "status": True,
+  "message": "Account number resolved",
+  "data": {
+    "account_number": "0001234567",
+    "account_name": "Doe Jane Loren",
+    "bank_id": 9
+  }
+}
+paystack_provider = PaymantProvider.PAYSTACK
 class PaymentTest(TestCase):
     @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_payment_data)
     def test_payment(self, _mock_api):
@@ -261,7 +294,7 @@ class PaymentTest(TestCase):
         data = {
             "email": "odeyemiincrease@yahoo.com",
             "amount": 10,
-            "provider": "T"
+            "provider": paystack_provider
          }
         res = self.client.post(url , data = data)
         response_data = res.json()
@@ -272,7 +305,7 @@ class PaymentTest(TestCase):
         url = reverse("payment_provider:verify_payment")
         data = {
             "tx_ref": "i6tafv4lmh", #&transaction_id=3360619
-            "provider": "T"
+            "provider": paystack_provider
          }
         res = self.client.post(url , data = data)
         response_data = res.json()
@@ -292,7 +325,7 @@ class TestListBanks(TestCase):
   @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_list_bank_success_data)
   def test_get_all_paystack_backs(self, response_data):
      url = reverse("payment_provider:bank-codes")
-     res = self.client.get(url , {'provider': 'T'})
+     res = self.client.get(url , {'provider': paystack_provider})
      res_dict  = res.json()
      self.assertEqual(res_dict, paystack_list_bank_success_data['data'])
      self.assertEqual(res.status_code, 200)
@@ -304,3 +337,30 @@ class TestListBanks(TestCase):
      res_dict  = res.json()
      self.assertEqual(res_dict[0], 'This is not a valid provider. Ask you Admin to provide this service')
      self.assertEqual(res.status_code, 400)
+
+  @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_resolve_bank_success_data)
+  def test_resolve_bank_account(self, response_data):
+     url = reverse("payment_provider:verify-bank-account")
+     data = {
+      "bank_code":"801",
+      "account_number": "0725865025",
+      "provider": paystack_provider,
+      }
+     res = self.client.post(url , data=data)
+     res_dict  = res.json()
+     self.assertEqual(res.status_code, 200)
+     #self.assertTrue(res_dict["status"])
+
+  @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_create_split_account_success_data)
+  def test_create_subaccount(self, response_data):
+     url = reverse("payment_provider:create-subaccount")
+     data = {
+      "bank_code":"801",
+      "account_number": "0725865025",
+      "provider": paystack_provider,
+      }
+     res = self.client.post(url , data=data)
+     res_dict  = res.json()
+     print(res_dict)
+     self.assertEqual(res.status_code, 200)
+     #self.assertTrue(res_dict["status"])
