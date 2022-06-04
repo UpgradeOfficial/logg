@@ -19,7 +19,10 @@ class Gateway:
             PaymantProvider.FLUTTERWAVE: FluterwaveProviver(),
             PaymantProvider.PAYSTACK: PaystackProvider()
         }
-        provider = providers_dict[provider]
+        try:
+            provider = providers_dict[provider]
+        except Exception as e:
+            raise ValidationError('This is not a valid provider. Ask you Admin to provide this service')
         return provider
 
     

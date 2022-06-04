@@ -40,3 +40,4 @@ get a single branch (command to run the settigs (10) in commands.txt file)
 			and also other env variables
 	viii Deploy with the button in the deploy tab in heroku
 	ix. You can access a particular app by (command to run the settigs (13) in commands.txt file)
+	x. type exit to leave a bash

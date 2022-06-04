@@ -163,6 +163,97 @@ paystack_webhook_transaction_success_data = {
     "plan":{}
   } 
 }
+paystack_list_bank_success_data = {
+  "status": True,
+  "message": "Banks retrieved",
+  "data": [
+    {
+      "name": "Abbey Mortgage Bank",
+      "slug": "abbey-mortgage-bank",
+      "code": "801",
+      "longcode": "",
+      "gateway": None,
+      "pay_with_bank": False,
+      "active": True,
+      "is_deleted": False,
+      "country": "Nigeria",
+      "currency": "NGN",
+      "type": "nuban",
+      "id": 174,
+      "createdAt": "2020-12-07T16:19:09.000Z",
+      "updatedAt": "2020-12-07T16:19:19.000Z"
+    },
+    {
+      "name": "Coronation Merchant Bank",
+      "slug": "coronation-merchant-bank",
+      "code": "559",
+      "longcode": "",
+      "gateway": None,
+      "pay_with_bank": False,
+      "active": True,
+      "is_deleted": False,
+      "country": "Nigeria",
+      "currency": "NGN",
+      "type": "nuban",
+      "id": 173,
+      "createdAt": "2020-11-24T10:25:07.000Z",
+      "updatedAt": "2020-11-24T10:25:07.000Z"
+    },
+    {
+      "name": "Infinity MFB",
+      "slug": "infinity-mfb",
+      "code": "50457",
+      "longcode": "",
+      "gateway": None,
+      "pay_with_bank": False,
+      "active": True,
+      "is_deleted": False,
+      "country": "Nigeria",
+      "currency": "NGN",
+      "type": "nuban",
+      "id": 172,
+      "createdAt": "2020-11-24T10:23:37.000Z",
+      "updatedAt": "2020-11-24T10:23:37.000Z"
+    },
+    {
+      "name": "Paycom",
+      "slug": "paycom",
+      "code": "999992",
+      "longcode": "",
+      "gateway": None,
+      "pay_with_bank": False,
+      "active": True,
+      "is_deleted": False,
+      "country": "Nigeria",
+      "currency": "NGN",
+      "type": "nuban",
+      "id": 171,
+      "createdAt": "2020-11-24T10:20:45.000Z",
+      "updatedAt": "2020-11-24T10:20:54.000Z"
+    },
+    {
+      "name": "Petra Mircofinance Bank Plc",
+      "slug": "petra-microfinance-bank-plc",
+      "code": "50746",
+      "longcode": "",
+      "gateway": None,
+      "pay_with_bank": False,
+      "active": True,
+      "is_deleted": False,
+      "country": "Nigeria",
+      "currency": "NGN",
+      "type": "nuban",
+      "id": 170,
+      "createdAt": "2020-11-24T10:03:06.000Z",
+      "updatedAt": "2020-11-24T10:03:06.000Z"
+    }
+  ],
+  "meta": {
+      "next": "YmFuazoxNjk=",
+      "previous": None,
+      "perPage": 5
+  }
+}
 class PaymentTest(TestCase):
     @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_payment_data)
     def test_payment(self, _mock_api):
@@ -197,5 +288,19 @@ class PaymentTest(TestCase):
         self.assertEqual(res["event"],"charge.success")
         # self.assertTrue(True)
         
+class TestListBanks(TestCase):
+  @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_list_bank_success_data)
+  def test_get_all_paystack_backs(self, response_data):
+     url = reverse("payment_provider:bank-codes")
+     res = self.client.get(url , {'provider': 'T'})
+     res_dict  = res.json()
+     self.assertEqual(res_dict, paystack_list_bank_success_data['data'])
+     self.assertEqual(res.status_code, 200)
         
-        
+  @mock.patch('payment_provider.paystack.PaystackProvider.request', return_value=paystack_list_bank_success_data)
+  def test_get_all_paystack_backs_with_wrong_provider(self, response_data):
+     url = reverse("payment_provider:bank-codes")
+     res = self.client.get(url , {'provider': 'Y'})
+     res_dict  = res.json()
+     self.assertEqual(res_dict[0], 'This is not a valid provider. Ask you Admin to provide this service')
+     self.assertEqual(res.status_code, 400)

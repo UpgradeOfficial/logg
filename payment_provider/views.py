@@ -47,6 +47,23 @@ class FlutterwaveWebhookView(APIView):
         data = flutterwave.FluterwaveProviver().webhook(request)
         return Response(status=status.HTTP_200_OK)
 
+class BankCodeNameView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, *args, **kwargs):
+        provider_query_string = self.request.query_params.get('provider')
+        provider = Gateway().get_payment_gateway(provider=provider_query_string)
+        data=provider.get_all_banks()
+        return Response(status=status.HTTP_200_OK, data=data)
+class VerifyBankAccountView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self,  provider, bank_code, account_number, *args, **kwargs):
+        provider = Gateway().get_payment_gateway(provider=provider)
+        print(provider)
+        data=provider.resolve_bank_account(bank_code=bank_code, account_number=account_number)
+        print(data)
+        return Response(status=status.HTTP_200_OK, data=data)
 
 
 

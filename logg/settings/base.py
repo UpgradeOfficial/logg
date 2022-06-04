@@ -305,4 +305,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Define the user model
 AUTH_USER_MODEL = 'user.User'
-BACKEND_ADMIN_EMAIL= config('BACKEND_ADMIN_EMAIL')
+BACKEND_ADMIN_EMAIL = config('BACKEND_ADMIN_EMAIL')
+PERCENTAGE_CHARGE = config('PERCENTAGE_CHARGE')

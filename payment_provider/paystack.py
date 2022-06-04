@@ -3,7 +3,7 @@ from multiprocessing.connection import Client
 import requests
 import hmac
 import hashlib
-from django.conf import settings
+from django.conf import Settings, settings
 from django.core.exceptions import ValidationError
 
 from core.utils import random_with_N_digits
@@ -76,5 +76,32 @@ class PaystackProvider(Gateway):
 
         return webhook_data
         
-    def create_split_account(self ):
-        pass
+    def create_split_account(self, school_name, account_number,  settlement_bank):
+        url = "subaccount/" #f"transactions/{payment_ref}/verify/"
+        data = { 
+            "business_name": school_name,
+            "settlement_bank": settlement_bank,
+            "account_number": account_number,
+            "percentage_charge": Settings.PERCENTAGE_CHARGE
+        }
+        response = self.request(method="POST", path=url, payload=data)
+        response_dict = response['data']
+        return response_dict
+
+    def get_all_banks(self, name_of_bank=None):
+        url = "bank/" 
+        response = self.request(method="GET", path=url)
+        response_dict = response['data']
+        if name_of_bank:
+            for banks in response_dict:
+                pass
+        return  response_dict
+
+    def resolve_bank_account(self, bank_code, account_number):
+        url = f"bank/resolve?account_number={account_number}&bank_code={bank_code}" 
+        response = self.request(method="GET", path=url)
+        if response["status"] == True and response["message"] == "Account number resolved":
+            response_dict = response['data']
+        else:
+            response_dict = {"message": "data not verified"}
+        return response_dict
