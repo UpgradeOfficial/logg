@@ -43,7 +43,7 @@ urlpatterns = [
     
    
     # Admin path
-    path('secret/', admin.site.urls),
+    path('admin/', admin.site.urls),
     # custom urls for core
     path('api/', include('core.urls')),
     # custom urls for users
