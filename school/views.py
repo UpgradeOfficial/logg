@@ -1,9 +1,14 @@
+from rest_framework.views import APIView
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions
+from rest_framework import permissions, status
+from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView
+from yaml import serialize
+from core.utils import send_mail_with_attachment
 from school.models import ClassRoom
 from user.models import School, Student
-from .serializers import AnnouncementModelSerializer, AppointmentModelSerializer, ClassRoomAttendanceModelSerializer, ClassRoomModelSerializer, ExpenseModelSerializer, FeeModelSerializer, SchoolModelSerializer, SubjectModelSerializer, TermModelSerializer
+from .serializers import AnnouncementModelSerializer, AppointmentModelSerializer, ClassRoomAttendanceModelSerializer, ClassRoomModelSerializer, EmailAttachmentSerializer, ExpenseModelSerializer, FeeModelSerializer, SchoolModelSerializer, SubjectModelSerializer, TermModelSerializer
 from user import permissions as UserPermission
 # Create your views here.
 
@@ -63,6 +68,30 @@ class AnnouncementCreateAPIView(CreateAPIView):
 class AppointmentCreateAPIView(CreateAPIView):
     serializer_class = AppointmentModelSerializer
     permission_classes = [permissions.IsAuthenticated,UserPermission.SchoolPermission]
+
+class SendMailView(APIView):
+    '''
+    Post a file(Image file) to this endpoint and it will be sent to 
+    the Patient mail, the name of the file must be named file
+    '''
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = EmailAttachmentSerializer
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        file = serializer.validated_data.get('file')
+        # email = serializer.validated_data.get('email_dict')
+        template_name= "email_attachment.html"
+        subject = f"File sent to {user.email}"
+        email = [user.email,]
+        context={
+                'email_sender': user.email
+        }
+        send_mail_with_attachment(subject=subject, to_email=email, file=file, input_context=context, template_name=template_name,)
+        data = { 'message':"email sent successfully"}
+        return Response(status=status.HTTP_200_OK,data=data)
 
 
 

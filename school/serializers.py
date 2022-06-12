@@ -1,7 +1,11 @@
 from asyncio.log import logger
+from attr import validate
 from click import secho
 from django.shortcuts import get_object_or_404
+from pkg_resources import require
 from rest_framework import serializers
+
+from core.serializers import ContactUsSerializer
 from .models import Announcement, Appointment, ClassRoom, ClassRoomAttendance, Expense, Fee, Subject, Term
 from user.models import  School, User
 from user.serialzers import UserProfileSerializer
@@ -66,4 +70,11 @@ class AnnouncementModelSerializer(serializers.ModelSerializer):
         model = Announcement
         fields = '__all__'
 
+class EmailAttachmentSerializer(serializers.Serializer):
+    file = serializers.FileField()
+    # email_dict = ContactUsSerializer(required=False, read_only=True)
+
+    # def validate(self, attrs):
+    #     print(attrs)
+    #     return super().validate(attrs)
 

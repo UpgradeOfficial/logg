@@ -103,11 +103,8 @@ class PaystackProvider(Gateway):
         return response_dict
 
     def create_split_account(self, bank_code, account_number):
-        print('yes')
         account = self.resolve_bank_account(bank_code=bank_code, account_number=account_number)
-        print(account)
         url = "subaccount/" 
-        print(settings.PERCENTAGE_CHARGE)
         data = { 
             "business_name": account.get('account_name'),
             "bank_code":  bank_code,
@@ -115,9 +112,6 @@ class PaystackProvider(Gateway):
             "percentage_charge": settings.PERCENTAGE_CHARGE
         }
         response = self.request(method="POST", path=url, payload=data)
-
-        print(response)
-
         #response_dict = response.json()
         #print(response_dict)
         return response
