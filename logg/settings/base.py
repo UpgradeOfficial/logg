@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from datetime import timedelta
+from dj_database_url import parse as db_url
 from pathlib import Path
 # Setting up a config for secrets
 from decouple import config
@@ -257,8 +258,14 @@ STRIPE_PRIVATE_KEY = config('STRIPE_PRIVATE_KEY')
 
 SOCIAL_SECRET = config('SOCIAL_SECRET')
 
-
-
+########################################### DATABASE CONFIGURATIONS  ###########################################
+DATABASES = {
+    "default": config(
+        "DATABASE_URL",
+        default="sqlite:///" + os.path.join(BASE_DIR, "logg.sqlite3"),
+        cast=db_url,
+    )
+}
 
 # Image setup
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

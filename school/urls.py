@@ -17,4 +17,5 @@ urlpatterns = [
     path("classroom-attendance/", views.ClassRoomAttendanceCreateAPIView.as_view(), name="create_classroom_attendance"),
     path("appointment/", views.AppointmentCreateAPIView.as_view(), name="create_appointment"),
     path("announcement/", views.AnnouncementCreateAPIView.as_view(), name="create_announcement"),
+    path("send-email-with-attachment/", views.SendMailView.as_view(), name="send-email-with-attachment"),
 ]

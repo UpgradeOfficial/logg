@@ -1,4 +1,4 @@
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -77,6 +77,27 @@ def send_mail(subject, to_email, input_context, template_name, cc_list=[], bcc_l
     )
     msg.attach_alternative(email_html_message, "text/html")
     msg.send()
+
+def send_mail_with_attachment(subject: str, to_email: list, file, input_context: str, template_name: str, cc_list=[], bcc_list=[]):
+    """
+    Send Activation Email To User
+    """
+    base_url =  settings.BACKEND_BASE_URL
+    
+    context = {
+        "site": "Logg",
+        "MEDIA_URL": "/".join((base_url, settings.MEDIA_URL[1:-1])),
+        **input_context,
+    }
+    email_list =[]
+    email_list+=to_email
+    # render email text
+    body = render_to_string(template_name, context)
+
+    
+    email = EmailMessage(subject=subject, body=body, from_email=settings.EMAIL_HOST_USER, to=to_email)
+    email.attach(file.name,  file.read(), file.content_type)
+    email.send()
 
 
 

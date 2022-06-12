@@ -78,7 +78,6 @@ class CreateSubAccountView(APIView):
         account_number = data['account_number']
         provider = Gateway().get_payment_gateway(provider=provider)
         data=provider.create_split_account(bank_code=bank_code, account_number=account_number)
-        print(data)
         return Response(status=status.HTTP_200_OK, data=data)
 
 

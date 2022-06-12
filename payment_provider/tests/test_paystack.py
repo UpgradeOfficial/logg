@@ -361,6 +361,5 @@ class TestListBanks(TestCase):
       }
      res = self.client.post(url , data=data)
      res_dict  = res.json()
-     print(res_dict)
      self.assertEqual(res.status_code, 200)
      #self.assertTrue(res_dict["status"])
